@@ -16,7 +16,7 @@ Blackboard.prototype._isEmpty = function(){
         return false;
     }
 };
-//Check if the new component has his oew propertt
+//Check if the new component has his own propertt
 Blackboard.prototype._hasProperty = function(){
     for(var key in this){
         if (hasOwnProperty.call(this, key) && key.charAt(0) !== "_" && key.charAt(0) !== "$") {
