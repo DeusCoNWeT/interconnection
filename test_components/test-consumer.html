@@ -1,19 +1,19 @@
-<link rel="import" href="../../bower_components/polymer/polymer.html">
+<link rel="import" href="../../polymer/polymer.html">
 
-<dom-module id="my-producer">
+<dom-module id="test-consumer">
     <template>
         <style>
             :host {
                 display: block;
             }
         </style>
-        <span>Please enter text.</span>
-        <input id="input" class="paper-font-body2" value="{{text::input}}">
-    
+         <p>I show what i am consuming</p>
+         <textarea id="textarea" value="{{text}}"></textarea>
+         <button id="but_1" on-click="_publish">Publicar</button>
     </template>
     <script>
         Polymer({
-            is: 'my-producer',
+            is: 'test-consumer',
             properties: {
                 text: {
                     type: String,
@@ -28,8 +28,12 @@
                 },
                 outputs: {
                     type: Object,
-                    value: {text: {type: "String", description: "brief description"}}
+                    value: {}
                 }
+            },
+            _publish: function(){
+                console.log("It will be published" + this.$.textarea.value)
+                this.$.but_1.value = "Publicado";
             }
         });
     </script>
