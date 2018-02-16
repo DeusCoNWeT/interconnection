@@ -27,7 +27,7 @@ gulp.task('instrument', function () {
       coverageVariable: '__coverage__'
     }))
     // instrumented files will go here
-    .pipe(gulp.dest(files.coverage_folder))
+    .pipe(gulp.dest(files.coverage_folder));
 });
 
 
@@ -49,7 +49,7 @@ gulp.task('test', ['instrument'], function () {
       gulp.src(files.coverage_file)
         .pipe(istanbulReport({
           reporters: ['text', 'html']
-        }))
+        }));
     });
 });
 

@@ -18,7 +18,7 @@
   "scripts": {
     "lint": "gulp lint",
     "test": "gulp test",
-    "doc": "gulp docs"
+    "doc": "gulp doc"
   },
   "precommit-silent": false,
   "pre-commit": ["lint","test","doc"],

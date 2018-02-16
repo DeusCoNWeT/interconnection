@@ -1,5 +1,19 @@
 (function (window, document) {
 
+  // Init
+  var body = document.querySelector('html');
+  var mutation_conf = { childList: true, subtree: true };
+
+  var observer = new MutationObserver(function (mutations) {
+    // Check if an element added is a custom element
+    // mutations.forEach(function (mutation) {
+    //   mutation.addedNodes.forEach(function(added){
+    //     console.log(added);
+    //   });
+    // });
+  });
+
+  observer.observe(body, mutation_conf);
 
   /* Object assign is a characteristic of ES6. ES6 only available in phantomjs 2.5 */
   if (typeof Object.assign != 'function') {
@@ -55,6 +69,7 @@
     Object.assign(properties, element.properties);
     return properties;
   };
+
 
   window.interconnection = {
     DomHandler: DomHandler
