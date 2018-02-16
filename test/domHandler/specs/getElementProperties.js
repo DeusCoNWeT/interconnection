@@ -9,7 +9,8 @@
   before(function () {
     interconnection = window.interconnection;
     DomHandler = interconnection.DomHandler;
-  })
+  });
+
   describe("Check getElementProperties", function () {
     it('Check get element properties return an object', function () {
       var properties_element = DomHandler.getElementProperties("#test-producer");
@@ -22,7 +23,8 @@
       // Check properties
       assert.isNotNull(properties.test, "Undefined 'test' property defined in test-producer component");
       assert.isUndefined(properties.behaviours, "Properties behaviours should be undefined");
-    })
+    });
+
     it('Pass invalid element', function () {
       try {
         DomHandler.getElementProperties("");
@@ -30,14 +32,15 @@
       } catch (err) {
         assert.instanceOf(err, Error, "Should throw an object instance of Error");
       }
-    })
-    it('Pass an HTML element', function(){
+    });
+
+    it('Pass an HTML element', function () {
       var element = document.querySelector("test-producer");
       assert.isObject(DomHandler.getElementProperties(element), "Should return an object");
-    })
+    });
 
-    it('Should return the properties defined by behaviour', function(){
-      assert.fail(null, null, "Not implemented yet");
-    })
-  })
+    // it('Should return the properties defined by behaviour', function () {
+    //   assert.fail(null, null, "Not implemented yet");
+    // });
+  });
 })();

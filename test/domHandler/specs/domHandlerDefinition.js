@@ -8,7 +8,7 @@
   before(function(){
     interconnection = window.interconnection;
     DomHandler = interconnection.DomHandler;
-  })
+  });
 
   describe('Check definition of DomHandler', function() {
 
