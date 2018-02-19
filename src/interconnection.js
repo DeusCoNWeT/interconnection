@@ -44,16 +44,16 @@
    */
   var DomHandler = {};
 
-
+  
   DomHandler.getElementProperties = function (element) {
-    if (typeof element === "string") {
+    if (typeof element === 'string') {
       try {
         element = document.querySelector(element);
       } catch (err) {
-        throw new Error("Element does not exist");
+        throw new Error('Element does not exist');
       }
     }
-    if (!element) { throw new Error("Element does not exist"); }
+    if (!element) { throw new Error('Element does not exist'); }
     var properties = {};
 
     // Inheritance properties

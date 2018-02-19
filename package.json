@@ -13,6 +13,7 @@
     "mocha": "^5.0.1",
     "mocha-phantomjs": "^4.1.0",
     "mocha-phantomjs-coverage-hook": "0.0.1",
+    "mocha-phantomjs-istanbul": "0.0.2",
     "pre-commit": "^1.2.2"
   },
   "scripts": {
@@ -21,7 +22,11 @@
     "doc": "gulp doc"
   },
   "precommit-silent": false,
-  "pre-commit": ["lint","test","doc"],
+  "pre-commit": [
+    "lint",
+    "test",
+    "doc"
+  ],
   "engines": {
     "node": ">=0.10.0"
   }

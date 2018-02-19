@@ -56,7 +56,7 @@ gulp.task('test', ['instrument'], function () {
 gulp.task('lint', function () {
   return gulp.src(files.lint_files)
     .pipe(eslint())
-    .pipe(eslint.format())
+    .pipe(eslint.format());
 });
 
 gulp.task('doc', function (cb) {
