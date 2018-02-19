@@ -29,8 +29,7 @@
   "precommit-silent": false,
   "pre-commit": [
     "lint",
-    "test",
-    "doc"
+    "test"
   ],
   "engines": {
     "node": ">=0.10.0"
