@@ -30,7 +30,7 @@ gulp.task('instrument', function () {
     .pipe(gulp.dest(files.coverage_folder))
     .pipe(istanbul.hookRequire());
 });
-gulp.task('test', ['instrument', 'sourceCode'], function () {
+gulp.task('test', ['instrument'], function () {
   return gulp
     // Select test files
     .src(files.test, { read: false })
@@ -54,7 +54,7 @@ gulp.task('test', ['instrument', 'sourceCode'], function () {
 
 gulp.task('lint', function () {
   return gulp.src(files.lint_files)
-    .pipe(eslint({ fix: true }))
+    .pipe(eslint())
     .pipe(eslint.format())
     .pipe(eslint.failAfterError());
 });

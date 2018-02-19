@@ -1,9 +1,7 @@
 (function (window, document) {
-
   // Init
   var body = document.querySelector('html');
   var mutation_conf = { childList: true, subtree: true };
-
   var observer = new MutationObserver(function (mutations) {
     // Check if an element added is a custom element
     // mutations.forEach(function (mutation) {
@@ -44,7 +42,7 @@
    */
   var DomHandler = {};
 
-  
+
   DomHandler.getElementProperties = function (element) {
     if (typeof element === 'string') {
       try {
