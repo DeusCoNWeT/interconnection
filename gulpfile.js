@@ -37,7 +37,7 @@ gulp.task('test', ['instrument'], function () {
     .src(files.test, { read: false })
     // Execute mocha test in virtual dom
     .pipe(mochaPhantomJS({
-      reporter: ["spec"],
+      reporter: ['spec'],
       phantomjs: {
         useColors: true,
         hooks: 'mocha-phantomjs-istanbul',
@@ -56,15 +56,16 @@ gulp.task('test', ['instrument'], function () {
 gulp.task('lint', function () {
   return gulp.src(files.lint_files)
     .pipe(eslint())
-    .pipe(eslint.format());
+    .pipe(eslint.format())
+    .pipe(eslint.failAfterError());
 });
 
 gulp.task('doc', function (cb) {
   gulp.src(files.doc, { read: false })
     .pipe(jsdoc({
       opts: {
-        "template": "node_modules/docdash",
-        "destination": "docs"
+        'template': 'node_modules/docdash',
+        'destination': 'docs'
       }
     }, cb));
 });
