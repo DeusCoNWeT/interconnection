@@ -51,7 +51,6 @@
         throw new Error('Element does not exist');
       }
     }
-    if (!element) { throw new Error('Element does not exist'); }
     var properties = {};
 
     // Inheritance properties
