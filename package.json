@@ -1,8 +1,11 @@
 {
   "private": true,
   "devDependencies": {
+    "@types/body-parser": "^1.16.8",
+    "babel-core": "^6.26.0",
     "chai": "^4.1.2",
     "docdash": "^0.4.0",
+    "es5-ext": "^0.10.39",
     "eslint-plugin-chai-friendly": "^0.4.1",
     "gulp": "^3.9.1",
     "gulp-eslint": "^4.0.2",
@@ -14,6 +17,8 @@
     "mocha-phantomjs": "^4.1.0",
     "mocha-phantomjs-coverage-hook": "0.0.1",
     "mocha-phantomjs-istanbul": "0.0.2",
+    "nyc": "^11.4.1",
+    "phantomjs": "^2.1.7",
     "pre-commit": "^1.2.2"
   },
   "scripts": {
