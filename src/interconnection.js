@@ -44,7 +44,18 @@
    */
   var DomHandler = {};
 
-  
+  DomHandler.getCustomElements = function(){
+    var list =[];
+    var list2 =[];
+    Polymer.telemetry.registrations.forEach(function(el){
+      list.push(el.is);
+      console.log(el.is);
+    });
+    list2 = list.map(function(el){return document.querySelectorAll(el);
+    });
+   
+  };
+
   DomHandler.getElementProperties = function (element) {
     if (typeof element === 'string') {
       try {

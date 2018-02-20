@@ -19,7 +19,7 @@
     "chai-friendly"
   ],
   "globals": {
-    "polymer": true,
+    "Polymer": true,
     "chai": true
   },
   "rules": {
