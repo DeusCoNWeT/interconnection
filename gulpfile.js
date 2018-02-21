@@ -1,6 +1,5 @@
 /* global require */
 'use strict';
-
 var gulp = require('gulp');
 var istanbul = require('gulp-istanbul');
 var mochaPhantomJS = require('gulp-mocha-phantomjs');
@@ -12,6 +11,7 @@ var jsdoc = require('gulp-jsdoc3');
 var files = {
   source: ['src/**/*.js'],
   test: ['test/**/*.html'],
+  testOutput: 'test_output/',
   coverage_folder: 'coverage/',
   lint_files: ['src/**/*.js', 'test/**/*.js'],
   doc: ['README.md', 'src/**/*.js']
@@ -27,10 +27,9 @@ gulp.task('instrument', function () {
       coverageVariable: '__coverage__'
     }))
     // instrumented files will go here
-    .pipe(gulp.dest(files.coverage_folder));
+    .pipe(gulp.dest(files.coverage_folder))
+    .pipe(istanbul.hookRequire());
 });
-
-
 gulp.task('test', ['instrument'], function () {
   return gulp
     // Select test files

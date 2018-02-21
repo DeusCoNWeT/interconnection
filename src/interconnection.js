@@ -1,9 +1,7 @@
 (function (window, document) {
-
   // Init
   var body = document.querySelector('html');
   var mutation_conf = { childList: true, subtree: true };
-
   var observer = new MutationObserver(function (mutations) {
     // Check if an element added is a custom element
     // mutations.forEach(function (mutation) {
@@ -64,7 +62,6 @@
         throw new Error('Element does not exist');
       }
     }
-    if (!element) { throw new Error('Element does not exist'); }
     var properties = {};
 
     // Inheritance properties
