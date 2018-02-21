@@ -32,6 +32,8 @@
 
     it('Check own properties', function () {
       var properties = DomHandler.getElementProperties(targetElement);
+      assert.isDefined(window.Polymer);
+      assert.isDefined(window.Polymer.telemetry);
       assert.isDefined(properties, 'properties is undefined');
       // Check properties
       assert.isNotNull(properties.test, 'Undefined "test" property defined in test-producer component');
