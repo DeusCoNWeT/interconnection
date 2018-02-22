@@ -1,0 +1,39 @@
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <link rel="import" href="../../../test_components/test-producer.html">
+    <script src="../../../bower_components/webcomponentsjs/webcomponents-lite.js"></script>
+
+    <link rel="stylesheet" type="text/css" href="../../../node_modules/mocha/mocha.css">
+</head>
+
+<body>
+    <div id="mocha">
+        <test-producer id="test-producer"></test-producer>
+        <test-producer id="test-producer"></test-producer>
+        <test-producer id="test-producer"></test-producer>
+        <a href="dsfd"></a>
+        <hola></hola>
+    </div>
+    <script src="../../../node_modules/chai/chai.js"></script>
+    <script src="../../../node_modules/mocha/mocha.js"></script>
+    <script src="../../../src/interconnection.js"></script>
+    <script>
+        mocha.setup("bdd")
+    </script>
+    <script src="../specs/getCustomElements.js"></script>
+    <script>
+        
+        if (window.mochaPhantomJS) {
+            mochaPhantomJS.run();
+        } else {
+            mocha.run();
+        }
+    </script>
+
+</body>
+
+</html>

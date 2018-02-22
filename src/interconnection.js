@@ -1,6 +1,7 @@
 (function (window, document) {
   // Init
   var body = document.querySelector('html');
+  var Polymer = window.Polymer;
   var mutation_conf = { childList: true, subtree: true };
   var observer = new MutationObserver(function (mutations) {
     // Check if an element added is a custom element
@@ -42,16 +43,29 @@
    */
   var DomHandler = {};
 
-  DomHandler.getCustomElements = function(){
-    var list =[];
-    var list2 =[];
-    Polymer.telemetry.registrations.forEach(function(el){
-      list.push(el.is);
-      console.log(el.is);
-    });
-    list2 = list.map(function(el){return document.querySelectorAll(el);
-    });
-   
+  DomHandler.getCustomElements = function () {
+    if (window.Polymer === undefined) {
+      throw new Error('Polymer is not defined');
+    } else {
+      if (window.Polymer.telemetry) {
+        var ce_registered = window.Polymer.telemetry.registrations.map(function (el) {
+          return el.is;
+        });
+
+        if (ce_registered === undefined || ce_registered.length == 0) {
+          console.log('There is no custom elements');
+          return ce_registered;
+        } else {
+          return document.querySelectorAll(ce_registered.join(','));
+        }
+      }
+    }
+
+    // return list.map(function (el) {
+    //   return document.querySelectorAll(el);
+    // }).reduce(function (e1, e2) {
+    //   return e1.concat(e2);
+    // }, []);
   };
 
   DomHandler.getElementProperties = function (element) {
