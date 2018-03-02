@@ -5,7 +5,10 @@
   var testProducer;
   var assert = chai.assert;
 
-  before(function () {
+  beforeEach(function () {
+    if (window.__html__) {
+      document.write(window.__html__['getCustomElements']);
+    }
     interconnection = window.interconnection;
     DomHandler = interconnection.DomHandler;
   });
@@ -17,9 +20,6 @@
       assert.isDefined(DomHandler, 'DomHandler is not defined');
     });
     it('Check if Polymer is defined', function () {
-      // var polymer = window.Polymer;
-      // window.Polymer = null;
-      
       try {
         DomHandler.getCustomElements();
         //window.Polymer = polymer;
@@ -34,9 +34,10 @@
     it('Check if list is empty', function () {
       var list = DomHandler.getCustomElements();
       assert.instanceOf(list, NodeList, 'Should be an HTMLElement');
+      console.log(window.__html__);
       assert.isNotEmpty(list, 'It should not be an empty array');
       assert.lengthOf(list, 3, 'Length should be 3');
-      list.forEach(function(element){
+      list.forEach(function (element) {
         assert.instanceOf(element, HTMLElement, 'Should be an HTMLElement');
       });
     });

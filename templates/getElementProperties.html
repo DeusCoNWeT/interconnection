@@ -5,6 +5,7 @@
   <meta charset="utf-8">
   <script src="../../../bower_components/webcomponentsjs/webcomponents-lite.js"></script>
   <link rel="import" href="../../../test_components/test-producer.html">
+
   <link rel="stylesheet" type="text/css" href="../../../node_modules/mocha/mocha.css">
 </head>
 
@@ -12,13 +13,14 @@
   <div id="mocha">
     <test-producer id="test-producer"></test-producer>
   </div>
+  <script src="../../../lib/polymer.js"></script>
   <script src="../../../node_modules/chai/chai.js"></script>
   <script src="../../../node_modules/mocha/mocha.js"></script>
   <script src="../../../coverage/interconnection.js"></script>
 
-<script>
+  <script>
     mocha.setup("bdd")
-  </script>
+  </script> 
   <script src="../specs/getElementProperties.js"></script>
   <script>
     if (window.mochaPhantomJS) {

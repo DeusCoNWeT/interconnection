@@ -7,7 +7,7 @@
                 display: block;
             }
         </style>
-         <p>I show what i am consuming</p>
+         <p>I show what i am consuming {{text}}</p>
          <textarea id="textarea" value="{{text}}"></textarea>
          <button id="but_1" on-click="_publish">Publicar</button>
     </template>
@@ -17,16 +17,8 @@
             properties: {
                 text: {
                     type: String,
-                    value: ""
-                },
-                inputs: {
-                    type: Object,
-                    value: {text: {type: "String", description: "brief description"}},
-                    readOnly: true
-                },
-                outputs: {
-                    type: Object,
-                    value: {}
+                    value: "",
+                    readOnly: false
                 }
             },
             _publish: function(){

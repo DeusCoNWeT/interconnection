@@ -10,7 +10,7 @@
         </style>
         <span>Please enter text.</span>
         <input id="input" class="paper-font-body2" value="{{text::input}}">
-        <p>[[text]]</p>
+        <input id="input" class="paper-font-body2" value="{{testing::input}}">
     </template>
     <script>
         Polymer({
@@ -19,7 +19,12 @@
             properties: {
                 text: {
                     type: String,
-                    value: "",
+                    input: true,
+                    output: true,
+                    description: ""
+                },
+                testing: {
+                    type: String,
                     input: true,
                     output: true,
                     description: ""
@@ -28,3 +33,4 @@
         });
     </script>
 </dom-module>
+ 

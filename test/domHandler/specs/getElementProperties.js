@@ -7,6 +7,9 @@
   var expect = chai.expect;
 
   before(function () {
+    if (window.__html__) {
+      document.write(window.__html__['getElementProperties']);
+    }
     interconnection = window.interconnection;
     DomHandler = interconnection.DomHandler;
     targetElement = document.querySelector('test-producer');

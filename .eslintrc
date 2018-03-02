@@ -6,7 +6,7 @@
     "amd": false,
     "mocha": true,
     "jasmine": false,
-    "phantomjs": false,
+    "phantomjs": true,
     "jquery": false,
     "prototypejs": false,
     "shelljs": false,
@@ -20,6 +20,7 @@
   ],
   "globals": {
     "Polymer": true,
+    "WeakMap":true,
     "chai": true
   },
   "rules": {
@@ -53,6 +54,6 @@
       2
     ],
     "quotes":[2,"single"],
-    "linebreak-style": [2, "unix"]
+    "linebreak-style": [2, "windows"]
   }
 }

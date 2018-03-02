@@ -11,29 +11,27 @@
 </head>
 
 <body>
-    <test-producer id="test-producer"></test-producer>
-    <test-producer id="test-producer"></test-producer>
-    <test-producer id="test-producer"></test-producer>
-    <a href="dsfd"></a>
-    <hola></hola>
     <div id="mocha">
+        <test-producer id="test-producer"></test-producer>
+        <test-producer id="test-producer"></test-producer>
+        <test-producer id="test-producer"></test-producer>
+        <a href="dsfd"></a>
+        <hola></hola>
     </div>
-
-
-    <div id="test" style="position: fixed; top: 0; left: -99999px;">
-    </div>
-
     <script src="../../../node_modules/chai/chai.js"></script>
     <script src="../../../node_modules/mocha/mocha.js"></script>
-
-    <script>mocha.setup('bdd');</script>
-
-    <script src="../../../src/interconnection.js" data-cover></script>
-
+    <script src="../../../src/interconnection.js"></script>
+    <script>
+        mocha.setup("bdd")
+    </script>
     <script src="../specs/getCustomElements.js"></script>
     <script>
-       mocha.run();
-
+        
+        if (window.mochaPhantomJS) {
+            mochaPhantomJS.run();
+        } else {
+            mocha.run();
+        }
     </script>
 
 </body>
