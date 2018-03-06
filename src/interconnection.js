@@ -89,7 +89,10 @@
    *
    */
   var Interconnection = {
-    __customElements: {},
+    /**
+     * Register of custom effects used to interconnect elements. There is only one effect for each registered custom element
+     */
+    __customEffects: {},
     __elementsMap: new WeakMap(),
     /**
      * Dom observer to record when adding or deleting items
@@ -97,25 +100,48 @@
     __domObserver: (function () {
       var mutation = new MutationObserver(function (mutations) {
         mutations.forEach(function (mutation) {
-          // NodeList for each issues
+          // NodeList.forEach issues
           [].forEach.call(mutation.addedNodes, function (added) {
             if (Interconnection.isCustomelement(added)) {
               // TODO: registrar cuando se añade y se elimina un elemento
-              Interconnection._addListener(added);
+              Interconnection._registerElement(added);
+            }
+          });
+
+
+          [].forEach.call(mutation.removedNodes, function (removed) {
+            if (Interconnection.isCustomelement(removed)) {
+              Interconnection._unregisterElement(removed);
             }
           });
         });
       });
+      // body.addEventListener('DOMNodeRemoved',function(e){
+      //   console.log(e);
+      // });
       mutation.observe(body, mutation_conf);
       return mutation;
     })(),
 
     /**
-     * Add a custom element in the binding map
+     * Register a custom element in the binding map
      * @param {HTMLElement} element Element that is registered in the binding map
      */
-    _addListener: function (element) {
-      this.__elementsMap.set(element, new ElementMap(element));
+    _registerElement: function (element) {
+      // REVIEW: should throw an error instance of avoid it?
+      if (!this.__elementsMap.has(element)) {
+        this.__elementsMap.set(element, new ElementMap(element));
+      }
+    },
+    /**
+     * Remove a listener of a custom element registered in the binding map
+     * @param {HTMLElement} element Element that will be unregistered
+     */
+    _unregisterElement: function (element) {
+      if (this.__elementsMap.has(element)) {
+        this.unbindAll(element);
+        this.__elementsMap.delete(element);
+      }
     },
     /**
      * Get all custom elements registered in the dom
@@ -147,16 +173,16 @@
      */
     _createEffect: function (model, property) {
       var name = model.is;
-      this.__customElements[name] = this.__customElements[name] || {};
+      this.__customEffects[name] = this.__customEffects[name] || {};
 
-      if (this.__customElements[name][property] == undefined) {
+      if (this.__customEffects[name][property] == undefined) {
         var fx = Polymer.Bind.ensurePropertyEffects(model, property);
         var propEffect = {
           kind: 'binding',
           fn: Interconnection._notifyObservers
         };
         fx.push(propEffect);
-        this.__customElements[name][property] = propEffect;
+        this.__customEffects[name][property] = propEffect;
       }
     },
     /**
@@ -229,7 +255,7 @@
     },
 
     /**
-     * Connect two properties of two elements.
+     * Connect source property to target property properties of two elements. Source property will write data on consumer property
      * 
      * @param {HTMLElement} el_source Element that will produce the data
      * @param {String} prop_source Property that will produce the data
@@ -238,10 +264,36 @@
      */
 
     bind: function (source_el, source_prop, target_el, target_prop) {
-      // TODO: comprobar si ambos elementos existen asi como las propiedades
-      // TODO: comprobar que la variable productor lo es y que la consumidora lo es.
+      if (!source_el instanceof HTMLElement || !target_el instanceof HTMLElement) {
+        throw new Error('Source and target element must be a HTMLElement');
+      }
+
+      if (source_el == target_el) {
+        throw new Error('Cannot bind the same element');
+      }
+
       var source_map = Interconnection.__elementsMap.get(source_el);
       var target_map = Interconnection.__elementsMap.get(target_el);
+
+      if (!this.isCustomelement(source_map) && !this.isCustomelement(target_el)) {
+        throw new Error('Both element must be custom elements');
+      }
+
+      //REVIEW: Should be a map created if it doesnt exist?
+      if (!source_map) {
+        this._registerElement(source_map);
+      }
+      if (!target_map) {
+        this._registerElement(target_map);
+      }
+
+      if (!source_map.producers_prop[source_prop]) {
+        throw Error('Property "' + source_prop + '" is not a producer property');
+      }
+
+      if (!target_map.producers_prop[target_prop]) {
+        throw Error('Property "' + target_prop + '" is not a producer property');
+      }
 
       var fn = function (source, value, effect, old, fromAbove) {
         target_el.set(target_prop, value);
@@ -250,10 +302,13 @@
       target_map.createListener(source_el, source_prop, target_prop, fn);
       source_map.createObserver(source_prop, target_el, target_prop, fn);
       this._createEffect(source_map.model, source_prop);
+
+      // initialization
+      fn(source_prop, source_el[source_prop]);
     },
 
     /**
-     * Notify to all observer that a property of an element has changed
+     * Function to notify to all observer that a property of an element has changed
      * @param {String} source Property that produce the change
      * @param {Any} value New value of the property
      * @param {Any} effect Effect defined for this type of notification (currently unused) 
@@ -268,18 +323,86 @@
         observers.forEach(function (observer) { observer.fn(source, value, effect, old, fromAbove); });
       }
     },
+    /**
+     * Check if any custom element property is consuming or producing data.
+     * @param {HTMLElement} element Element that will be checked
+     * @return {Boolean} If the custom element is consuming or producing data
+     */
+    isBinded: function(element){
+      var isBinded = false;
+
+      if (this.__elementsMap.has(element)){
+        var map = this.__elementsMap.get(element);
+
+        if (Object.keys(map.observers).length >0){
+          for (var prop in map.observers){
+            isBinded = isBinded || map.observers[prop].length > 0;
+          }
+        }
+        if (Object.keys(map.listeners).length >0){
+          for (var prop in map.listeners){
+            isBinded = isBinded || map.listeners[prop] != {};
+          }
+        }
+      }
+
+      return isBinded;
+    },
+    /**
+     * Check if a custom element property is consuming or producing data.
+     * @param {HTMLElement} element Element that will be checked
+     * @param {String} property Property that will be checked
+     * @return {Boolean} If a custom element property is consuming or producing data
+     */
+    isPropertyBinded: function (element, property) {
+      var isBinded = false;
+
+      if (this.__elementsMap.has(element)) {
+        isBinded = this.isConsumer(element, property) || this.isProducer(element, property);
+      }
+
+      return isBinded;
+    },
+    
+    /**
+     * Check if a custom element property is consuming data.
+     * @param {HTMLElement} element Element that will be checked
+     * @param {String} property Property that will be checked
+     * @return {Boolean} If a custom element property is consuming data
+     */
+    isConsumer: function(element, property){
+      return element.listeners[property] !== undefined;
+    },
+
+    /**
+     * Check if a custom element property is producing data.
+     * @param {HTMLElement} element Element that will be checked
+     * @param {String} property Property that will be checked
+     * @return {Boolean} If a custom element property is producing data
+     */
+    isProducer: function(element, property){
+      return element.observers[property] !== undefined || element.observers[property].length > 0;
+    },
 
     /**
      * Unbind a property of a custom element of consuming data
      * @param {HTMLElement} target_el Consumer element
      * @param {String} target_prop Consumer property
      */
-    unbindconsumer: function (target_el, target_prop) {
-      // TODO: check if a consumer
+    unbindConsumer: function (target_el, target_prop) {
+
+      if (!target_el instanceof HTMLElement) {
+        throw new Error('Target element is not an HTMLElement');
+      }
+
       var el_map = this.__elementsMap.get(target_el);
+      if (!el_map) {
+        throw new Error('Target element is not a custom element');
+      }
+
       var listener = el_map.listeners[target_prop];
       if (!listener) {
-        return ;
+        return;
       }
 
       delete el_map.listeners[target_prop];
@@ -294,17 +417,52 @@
      * @param {HTMLElement} target_el Producer element
      * @param {String} target_prop Producer property
      */
-    unbindproducer: function (target_el, target_prop) {
-      // TODO: check if a producer
+    unbindProducer: function (target_el, target_prop) {
+
+      if (!target_el instanceof HTMLElement) {
+        throw new Error('Target element is not an HTMLElement');
+      }
+
       var el_map = this.__elementsMap.get(target_el);
+      if (!el_map) {
+        throw new Error('Target element is not a custom element');
+      }
 
       var observers = el_map.observers[target_prop];
       el_map.observers[target_prop] = [];
 
       var that = this;
-      observers.forEach(function (observer) {
-        delete that.__elementsMap.get(observer.target_el).listeners[observer.target_prop];
-      });
+      if (observers) {
+        observers.forEach(function (observer) {
+          delete that.__elementsMap.get(observer.target_el).listeners[observer.target_prop];
+        });
+      }
+    },
+
+    /**
+     * Unbind a custom element property of consuming and producing data
+     * @param {HTMLElement} target_el Element that will be unbinded
+     * @param {String} property Property that will be unbinded
+     */
+    unbind: function (target_el, target_prop) {
+      this.unbindConsumer(target_el, target_prop);
+      this.unbindProducer(target_el, target_prop);
+    },
+    /**
+     * Unbind all connections of a custom element properties.
+     * Eliminates all production and consumer connections
+     * @param {HTMLElement} element Element that will be unbinded
+     */
+    unbindElement: function (element) {
+      var map = this.__elementsMap.get(element);
+
+      for (var property in map.observers) {
+        this.unbindProducer(element, property);
+      }
+
+      for (var property in map.listeners) {
+        this.unbindConsumer(element, property);
+      }
     }
   };
 

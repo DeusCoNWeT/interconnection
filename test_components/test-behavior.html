@@ -1,28 +1,24 @@
 <script>
     TestBehavior = {
       properties: {
-        inheritedProperty: {
+        bool: {
           type: Boolean,
           value: false,
           notify: true,
-          observer: '_highlightChanged'
+          observer: '_boolChanged'
         }
       },
 
       listeners: {
-        click: '_toggleHighlight'
+        click: '_togglebool'
       },
 
-      created: function() {
-        //console.log('Highlighting for ', this, 'enabled!');
+      _togglebool: function() {
+        this.set('bool', !this.bool);
       },
 
-      _toggleHighlight: function() {
-        this.isHighlighted = !this.isHighlighted;
-      },
-
-      _highlightChanged: function(value) {
-        this.toggleClass('highlighted', value);
+      _boolChanged: function(value) {
+        this.toggleClass('bool', value);
       }
 
     };

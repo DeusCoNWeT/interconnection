@@ -1,7 +1,6 @@
 (function () {
 
   var interconnection;
-  var DomHandler;
   var testProducer;
   var assert = chai.assert;
 
@@ -9,19 +8,17 @@
     if (window.__html__) {
       document.write(window.__html__['getCustomElements']);
     }
-    interconnection = window.interconnection;
-    DomHandler = interconnection.DomHandler;
+    interconnection = window.Interconnection;
   });
 
   describe('Check getCustomElements', function () {
 
     it('Check if DomHandler is defined', function () {
       assert.isDefined(interconnection, 'Interconnection is not defined');
-      assert.isDefined(DomHandler, 'DomHandler is not defined');
     });
     it('Check if Polymer is defined', function () {
       try {
-        DomHandler.getCustomElements();
+        interconnection.getCustomElements();
         //window.Polymer = polymer;
         assert.fail(null, null, 'Deberia lanzar un error');
       } catch (err) {
@@ -32,7 +29,7 @@
 
     });
     it('Check if list is empty', function () {
-      var list = DomHandler.getCustomElements();
+      var list = interconnection.getCustomElements();
       assert.instanceOf(list, NodeList, 'Should be an HTMLElement');
       console.log(window.__html__);
       assert.isNotEmpty(list, 'It should not be an empty array');
