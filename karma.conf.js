@@ -11,7 +11,7 @@ module.exports = function (config) {
     // list of files / patterns to load in the browser
     files: [
       // Test dependencies
-      'test/**/*.test.html',
+      'test/**/*.html',
       'bower_components/webcomponentsjs/webcomponents-lite.js',
       {
         pattern: 'node_modules/**',
@@ -71,10 +71,11 @@ module.exports = function (config) {
 
     singleRun: true,
     proxies: {
-      "/node_modules/": "/base/node_modules",
-      "/bower_components/": "/base/bower_components",
-      "/specs/": "/base/specs",
-      "/src/": "/base/src/"
+      '/node_modules/': '/base/node_modules',
+      '/bower_components/': '/base/bower_components',
+      '/specs/': '/base/specs',
+      '/src/': '/base/src/',
+      '/test_components': '/base/test_components'
     },
     concurrency: Infinity
   });

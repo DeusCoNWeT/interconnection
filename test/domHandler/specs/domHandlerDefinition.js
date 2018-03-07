@@ -18,5 +18,6 @@
       assert.isDefined(interconnection, 'Interconnection is not defined');
     });
 
+
   });
 })();

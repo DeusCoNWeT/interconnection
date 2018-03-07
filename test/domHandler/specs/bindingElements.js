@@ -40,6 +40,23 @@
     });
 
     it('Unbinding element consumer', function () {
+      try{
+        interconnection.unbindConsumer();
+        assert.fail(null,null, 'element is not defined. Should throw an error');
+      } catch(err){
+        assert.instanceOf(err, Error, 'Should throw an error');
+      }
+      var noCE = document.querySelector('#noCustomElement');
+
+      try{
+        interconnection.unbindConsumer(noCE,null);
+        assert.fail(null,null, 'element is not a custom element. Should throw an error');
+      } catch(err){
+        assert.instanceOf(err, Error, 'Should throw an error');
+      }
+
+
+
       interconnection.unbindConsumer(el2, prop1);
 
       el1.set(prop1, '');
@@ -51,12 +68,41 @@
     });
 
     it('Unbinding element producer with only one consume', function () {
+
+      try{
+        interconnection.unbindProducer();
+        assert.fail(null,null, 'element is not defined. Should throw an error');
+      } catch(err){
+        assert.instanceOf(err, Error, 'Should throw an error');
+      }
+      var noCE = document.querySelector('#noCustomElement');
+
+      try{
+        interconnection.unbindProducer(noCE,null);
+        assert.fail(null,null, 'element is not a custom element. Should throw an error');
+      } catch(err){
+        assert.instanceOf(err, Error, 'Should throw an error');
+      }
+
       interconnection.unbindProducer(el2, prop1);
 
       el2.set(prop1, 'testing 2');
       assert.notEqual(el2[prop1], el3[prop1], 'After unbind a producer, both properties change at same time');
     });
+    it('Unbind an element', function(){
+      interconnection.bind(el1, prop1, el2, prop1);
+      interconnection.bind(el2, prop1, el3, prop1);
 
+      interconnection.bind(el1,prop2,el3,prop2);
+
+      interconnection.unbindElement(el2);
+      assert.isTrue(interconnection.isPropertyBinded(el1, prop2), 'Element 1 should be binded');
+      assert.isFalse(interconnection.isBinded(el2), 'Element 2 should be unbinded');
+      assert.isTrue(interconnection.isPropertyBinded(el3, prop2), 'Element 3 should be binded');
+      
+      interconnection.unbindElement(el1);
+      assert.isFalse(interconnection.isPropertyBinded(el3, prop2), 'Element 3 should be unbinded');
+    });
     it('Binding two elements to one', function () {
 
       el1.set(prop1, '');
@@ -116,8 +162,8 @@
       assert.notEqual(el2[prop1], el1[prop1], 'Element 1 and element 2 should be unbinded after unbind');
       el2.set(prop1, 'testing2');
       assert.notEqual(el2[prop1], el3[prop1], 'Element 2 and element 3 should be unbinded after unbind');
-      el1.set(prop1,'');
-      el2.set(prop1,'');
+      el1.set(prop1, '');
+      el2.set(prop1, '');
     });
 
     it('Try to bind no custom elements', function () {
@@ -146,6 +192,31 @@
         assert.instanceOf(err, Error, 'Should be instance of error');
       }
 
+
+
+    });
+
+    it('Try to bind not HTMLElements', function () {
+      try {
+        interconnection.bind('', 'text', el1, prop1);
+        assert.fail(null, null, 'Should throw an error if consumer is not a HTMLElement');
+      } catch (err) {
+        assert.instanceOf(err, Error, 'Should be instance of error');
+      }
+
+      try {
+        interconnection.bind(el1, prop1, '', 'text');
+        assert.fail(null, null, 'Should throw an error if producer is not a HTMLElement');
+      } catch (err) {
+        assert.instanceOf(err, Error, 'Should be instance of error');
+      }
+
+      try {
+        interconnection.bind('', 'text', '', 'text');
+        assert.fail(null, null, 'Should throw an error if both are not HTMLElements');
+      } catch (err) {
+        assert.instanceOf(err, Error, 'Should be instance of error');
+      }
     });
 
     it('Trying to connect an element to itself', function () {
@@ -158,7 +229,7 @@
       }
     });
 
-    it('Trying to connect empty element', function(){
+    it('Trying to connect empty element', function () {
       try {
         interconnection.bind(null, undefined, el2, prop1);
         assert.fail(null, null, 'Should throw an error if consumer element is empty');
@@ -199,5 +270,46 @@
         assert.instanceOf(err, Error, 'Should be an error');
       }
     });
+
+    it('Check if a custom element is binded', function () {
+
+      assert.isFalse(interconnection.isBinded(null, 'isBinded should return false if element is not registered or is empty'));
+      assert.isFalse(interconnection.isBinded(el1), 'Element 1 should be unbinded');
+      interconnection.bind(el1, prop1, el2, prop1);
+      assert.isTrue(interconnection.isBinded(el1), 'Element 1 should be binded with element 2');
+      assert.isTrue(interconnection.isBinded(el2), 'Element 2 should be binded with element 3');
+      interconnection.unbindElement(el2);
+
+    });
+
+    it('Check if a custom element property is binded', function () {
+
+      assert.isFalse(interconnection.isPropertyBinded(el1, prop1), 'Element 1 text is not binded');
+      assert.isFalse(interconnection.isPropertyBinded(el1, null), 'Should be false. Property is not defined');
+      assert.isFalse(interconnection.isPropertyBinded(null, null), 'Should be false. Element is not defined');
+
+      interconnection.bind(el1, prop1, el2, prop1);
+      
+      assert.isTrue(interconnection.isPropertyBinded(el1,prop1), 'Element 1 text is binded with element 2 text');
+      assert.isTrue(interconnection.isPropertyBinded(el1,prop1), 'Element 2 text is binded with element 1 text');
+      
+      interconnection.unbindElement(el1);
+
+    });
+
+    
+    it('Check if a property is consuming or producing data', function(){
+
+      assert.isFalse(interconnection.isConsumer(el1,prop1), 'Element 1 text is not consuming data');
+      assert.isFalse(interconnection.isProducer(el1,prop1), 'Element 1 text is not producing data');
+
+      interconnection.bind(el1, prop1, el2, prop1);
+      assert.isTrue(interconnection.isConsumer(el2,prop1), 'Element 2 text is consuming data');
+      assert.isTrue(interconnection.isProducer(el1,prop1), 'Element 1 text is producing data');
+
+      interconnection.unbindElement(el1);
+    
+    });
+
   });
 })();

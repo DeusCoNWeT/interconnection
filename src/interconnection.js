@@ -93,7 +93,7 @@
      * Register of custom effects used to interconnect elements. There is only one effect for each registered custom element
      */
     __customEffects: {},
-    __elementsMap: new WeakMap(),
+    elementsMap: new WeakMap(),
     /**
      * Dom observer to record when adding or deleting items
      */
@@ -103,7 +103,6 @@
           // NodeList.forEach issues
           [].forEach.call(mutation.addedNodes, function (added) {
             if (Interconnection.isCustomelement(added)) {
-              // TODO: registrar cuando se añade y se elimina un elemento
               Interconnection._registerElement(added);
             }
           });
@@ -116,9 +115,7 @@
           });
         });
       });
-      // body.addEventListener('DOMNodeRemoved',function(e){
-      //   console.log(e);
-      // });
+
       mutation.observe(body, mutation_conf);
       return mutation;
     })(),
@@ -129,8 +126,8 @@
      */
     _registerElement: function (element) {
       // REVIEW: should throw an error instance of avoid it?
-      if (!this.__elementsMap.has(element)) {
-        this.__elementsMap.set(element, new ElementMap(element));
+      if (!this.elementsMap.has(element)) {
+        this.elementsMap.set(element, new ElementMap(element));
       }
     },
     /**
@@ -138,9 +135,9 @@
      * @param {HTMLElement} element Element that will be unregistered
      */
     _unregisterElement: function (element) {
-      if (this.__elementsMap.has(element)) {
-        this.unbindAll(element);
-        this.__elementsMap.delete(element);
+      if (this.elementsMap.has(element)) {
+        this.unbindElement(element);
+        this.elementsMap.delete(element);
       }
     },
     /**
@@ -154,14 +151,9 @@
         if (window.Polymer.telemetry) {
           var ce_registered = window.Polymer.telemetry.registrations.map(function (el) {
             return el.is;
-          });
+          }) || [];
 
-          if (ce_registered === undefined || ce_registered.length == 0) {
-            console.log('There is no custom elements');
-            return ce_registered;
-          } else {
-            return document.querySelectorAll(ce_registered.join(','));
-          }
+          return document.querySelectorAll(ce_registered.join(','));
         }
       }
     },
@@ -264,7 +256,7 @@
      */
 
     bind: function (source_el, source_prop, target_el, target_prop) {
-      if (!source_el instanceof HTMLElement || !target_el instanceof HTMLElement) {
+      if (!(source_el instanceof HTMLElement) || !(target_el instanceof HTMLElement)) {
         throw new Error('Source and target element must be a HTMLElement');
       }
 
@@ -272,8 +264,8 @@
         throw new Error('Cannot bind the same element');
       }
 
-      var source_map = Interconnection.__elementsMap.get(source_el);
-      var target_map = Interconnection.__elementsMap.get(target_el);
+      var source_map = Interconnection.elementsMap.get(source_el);
+      var target_map = Interconnection.elementsMap.get(target_el);
 
       if (!this.isCustomelement(source_map) && !this.isCustomelement(target_el)) {
         throw new Error('Both element must be custom elements');
@@ -281,10 +273,12 @@
 
       //REVIEW: Should be a map created if it doesnt exist?
       if (!source_map) {
-        this._registerElement(source_map);
+        this._registerElement(source_el);
+        source_map = Interconnection.elementsMap.get(source_el);
       }
       if (!target_map) {
-        this._registerElement(target_map);
+        this._registerElement(target_el);
+        target_map = Interconnection.elementsMap.get(target_el);
       }
 
       if (!source_map.producers_prop[source_prop]) {
@@ -316,7 +310,7 @@
      * @param {Any} fromAbove Provided by Polymer (currently unused)
      */
     _notifyObservers: function (source, value, effect, old, fromAbove) {
-      var el_map = Interconnection.__elementsMap.get(this);
+      var el_map = Interconnection.elementsMap.get(this);
       var observers = el_map.observers[source];
 
       if (observers) {
@@ -328,19 +322,19 @@
      * @param {HTMLElement} element Element that will be checked
      * @return {Boolean} If the custom element is consuming or producing data
      */
-    isBinded: function(element){
+    isBinded: function (element) {
       var isBinded = false;
 
-      if (this.__elementsMap.has(element)){
-        var map = this.__elementsMap.get(element);
+      if (this.elementsMap.has(element)) {
+        var map = this.elementsMap.get(element);
 
-        if (Object.keys(map.observers).length >0){
-          for (var prop in map.observers){
+        if (Object.keys(map.observers).length > 0) {
+          for (var prop in map.observers) {
             isBinded = isBinded || map.observers[prop].length > 0;
           }
         }
-        if (Object.keys(map.listeners).length >0){
-          for (var prop in map.listeners){
+        if (Object.keys(map.listeners).length > 0) {
+          for (var prop in map.listeners) {
             isBinded = isBinded || map.listeners[prop] != {};
           }
         }
@@ -357,21 +351,22 @@
     isPropertyBinded: function (element, property) {
       var isBinded = false;
 
-      if (this.__elementsMap.has(element)) {
+      if (this.elementsMap.has(element)) {
         isBinded = this.isConsumer(element, property) || this.isProducer(element, property);
       }
 
       return isBinded;
     },
-    
+
     /**
      * Check if a custom element property is consuming data.
      * @param {HTMLElement} element Element that will be checked
      * @param {String} property Property that will be checked
      * @return {Boolean} If a custom element property is consuming data
      */
-    isConsumer: function(element, property){
-      return element.listeners[property] !== undefined;
+    isConsumer: function (element, property) {
+
+      return this.elementsMap.has(element) && this.elementsMap.get(element).listeners[property] !== undefined;
     },
 
     /**
@@ -380,8 +375,9 @@
      * @param {String} property Property that will be checked
      * @return {Boolean} If a custom element property is producing data
      */
-    isProducer: function(element, property){
-      return element.observers[property] !== undefined || element.observers[property].length > 0;
+    isProducer: function (element, property) {
+      var map = this.elementsMap.get(element);
+      return map !== undefined && map.observers[property] !== undefined && map.observers[property].length > 0;
     },
 
     /**
@@ -391,26 +387,25 @@
      */
     unbindConsumer: function (target_el, target_prop) {
 
-      if (!target_el instanceof HTMLElement) {
+      if (!(target_el instanceof HTMLElement)) {
         throw new Error('Target element is not an HTMLElement');
       }
 
-      var el_map = this.__elementsMap.get(target_el);
+      var el_map = this.elementsMap.get(target_el);
       if (!el_map) {
         throw new Error('Target element is not a custom element');
       }
 
       var listener = el_map.listeners[target_prop];
-      if (!listener) {
-        return;
+      if (listener) {
+        delete el_map.listeners[target_prop];
+
+        var source_map = this.elementsMap.get(listener.source_el);
+        var idx = source_map.observers[listener.source_prop].indexOf(listener.fn);
+
+        source_map.observers[listener.source_prop].splice(idx, 1);
+
       }
-
-      delete el_map.listeners[target_prop];
-
-      var source_map = this.__elementsMap.get(listener.source_el);
-      var idx = source_map.observers[listener.source_prop].indexOf(listener.fn);
-
-      source_map.observers[listener.source_prop].splice(idx, 1);
     },
     /**
      * Unbind a property of a custom element of producing data
@@ -419,11 +414,11 @@
      */
     unbindProducer: function (target_el, target_prop) {
 
-      if (!target_el instanceof HTMLElement) {
+      if (!(target_el instanceof HTMLElement)) {
         throw new Error('Target element is not an HTMLElement');
       }
 
-      var el_map = this.__elementsMap.get(target_el);
+      var el_map = this.elementsMap.get(target_el);
       if (!el_map) {
         throw new Error('Target element is not a custom element');
       }
@@ -434,7 +429,7 @@
       var that = this;
       if (observers) {
         observers.forEach(function (observer) {
-          delete that.__elementsMap.get(observer.target_el).listeners[observer.target_prop];
+          delete that.elementsMap.get(observer.target_el).listeners[observer.target_prop];
         });
       }
     },
@@ -454,7 +449,7 @@
      * @param {HTMLElement} element Element that will be unbinded
      */
     unbindElement: function (element) {
-      var map = this.__elementsMap.get(element);
+      var map = this.elementsMap.get(element);
 
       for (var property in map.observers) {
         this.unbindProducer(element, property);
