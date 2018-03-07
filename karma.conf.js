@@ -1,3 +1,4 @@
+var path = require('path');
 module.exports = function (config) {
   config.set({
 
@@ -52,8 +53,29 @@ module.exports = function (config) {
     reporters: ['mocha', 'coverage'],
 
     coverageReporter: {
-      type: 'html',
-      dir: 'coverage/'
+      dir: 'coverage/',
+      reporters: [
+        { 
+          type:'html'
+        },
+        {
+          type: 'text'
+        },
+        { 
+          type: function() {
+            var shieldBadgeReporter = require('istanbul-reporter-shield-badge')
+            var istanbul = require('istanbul')
+            istanbul.Report.register(shieldBadgeReporter)
+            return 'shield-badge'
+          }(),
+          subdir: '.',
+          coverageType: 'statements',
+          range: [75, 90],
+          subject: 'Code Coverage', 
+          readmeFilename: 'README.md',
+          readmeDir: path.resolve(__dirname) // i.e. if karma.conf.js is located in test/unit from the root folder of your project
+        }
+      ]
     },
 
     port: 9876,

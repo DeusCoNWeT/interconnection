@@ -1,3 +1,5 @@
+![Code Coverage-shield-badge-1](https://img.shields.io/badge/Code%20Coverage-98.69%25-brightgreen.svg)
+
 ![](https://cloud.githubusercontent.com/assets/110953/7877439/6a69d03e-0590-11e5-9fac-c614246606de.png)
 ## Polymer Starter Kit
 
