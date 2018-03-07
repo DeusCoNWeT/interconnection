@@ -63,10 +63,10 @@ module.exports = function (config) {
         },
         { 
           type: function() {
-            var shieldBadgeReporter = require('istanbul-reporter-shield-badge')
-            var istanbul = require('istanbul')
-            istanbul.Report.register(shieldBadgeReporter)
-            return 'shield-badge'
+            var shieldBadgeReporter = require('istanbul-reporter-shield-badge');
+            var istanbul = require('istanbul');
+            istanbul.Report.register(shieldBadgeReporter);
+            return 'shield-badge';
           }(),
           subdir: '.',
           coverageType: 'statements',
