@@ -6,9 +6,9 @@
 
   before(function () {
 
-    if (window.__html__) {
-      document.write(window.__html__['domHandlerDefinition.test']);
-    }
+    // if (window.__html__) {
+    //   document.write(window.__html__['domHandlerDefinition.test']);
+    // }
     interconnection = window.Interconnection;
   });
 

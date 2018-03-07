@@ -8,9 +8,6 @@
   var prop1 = 'text', prop2 = 'testing';
 
   before(function () {
-    if (window.__html__) {
-      document.write(window.__html__['bindingElements']);
-    }
     interconnection = window.Interconnection;
     testProducers = document.querySelectorAll('test-producer');
     el1 = testProducers[0];

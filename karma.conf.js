@@ -11,8 +11,7 @@ module.exports = function (config) {
     // list of files / patterns to load in the browser
     files: [
       // Test dependencies
-      'test/**/*.html',
-      'bower_components/webcomponentsjs/webcomponents-lite.js',
+      'test/fixture/fixture.html',
       {
         pattern: 'node_modules/**',
         included: false,
@@ -26,7 +25,7 @@ module.exports = function (config) {
       },
       {
         pattern: 'src/**',
-        included: true,
+        included: false,
         served: true
       },
       {
@@ -34,21 +33,19 @@ module.exports = function (config) {
         included: false,
         served: true
       },
-      {
-        pattern: 'test/**/*.js',
-        included: true,
-        served: true
-      },
+      // IMPORTANT: loader.js inject html before testing
+      'test/loader.js',
+      'test/specs/*.js'
 
     ],
 
     preprocessors: {
-      '**/*.html': ['html2js'],
+      'test/fixture/*.html': ['html2js'],
       'src/**/*.js': ['coverage'],
     },
     html2JsPreprocessor: {
       processPath: function (filePath) {
-        return filePath.replace('test/domHandler/fixture/', '').replace(/\.html$/, '');
+        return filePath.replace('test/fixture/', '').replace(/\.html$/, '');
       }
     },
 
@@ -71,11 +68,26 @@ module.exports = function (config) {
 
     singleRun: true,
     proxies: {
-      '/node_modules/': '/base/node_modules',
-      '/bower_components/': '/base/bower_components',
-      '/specs/': '/base/specs',
-      '/src/': '/base/src/',
-      '/test_components': '/base/test_components'
+      '/node_modules/': {
+        target: '/base/node_modules',
+        changeOrigin: true
+      },
+      '/bower_components/': {
+        target: '/base/bower_components',
+        changeOrigin: true
+      },
+      '/specs/': {
+        target: '/base/test/specs',
+        changeOrigin: true
+      },
+      '/src/': {
+        target: '/base/src/',
+        changeOrigin: true
+      },
+      '/test_components/': {
+        target: '/base/test_components',
+        changeOrigin: true
+      }
     },
     concurrency: Infinity
   });

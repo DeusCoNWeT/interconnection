@@ -6,10 +6,6 @@
   var body;
   
   before(function () {
-
-    if (window.__html__) {
-      document.write(window.__html__['registerElements']);
-    }
     interconnection = window.Interconnection;
     body = document.querySelector('#container');
   });

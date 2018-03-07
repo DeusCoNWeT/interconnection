@@ -5,9 +5,9 @@
   var assert = chai.assert;
 
   beforeEach(function () {
-    if (window.__html__) {
-      document.write(window.__html__['getCustomElements']);
-    }
+    // if (window.__html__) {
+    //   document.write(window.__html__['getCustomElements']);
+    // }
     interconnection = window.Interconnection;
   });
 
