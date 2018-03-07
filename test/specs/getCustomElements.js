@@ -4,10 +4,7 @@
   var testProducer;
   var assert = chai.assert;
 
-  beforeEach(function () {
-    // if (window.__html__) {
-    //   document.write(window.__html__['getCustomElements']);
-    // }
+  before(function () {
     interconnection = window.Interconnection;
   });
 

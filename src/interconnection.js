@@ -97,28 +97,7 @@
     /**
      * Dom observer to record when adding or deleting items
      */
-    __domObserver: (function () {
-      var mutation = new MutationObserver(function (mutations) {
-        mutations.forEach(function (mutation) {
-          // NodeList.forEach issues
-          [].forEach.call(mutation.addedNodes, function (added) {
-            if (Interconnection.isCustomelement(added)) {
-              Interconnection._registerElement(added);
-            }
-          });
-
-
-          [].forEach.call(mutation.removedNodes, function (removed) {
-            if (Interconnection.isCustomelement(removed)) {
-              Interconnection._unregisterElement(removed);
-            }
-          });
-        });
-      });
-
-      mutation.observe(body, mutation_conf);
-      return mutation;
-    })(),
+    __domObserver: null,
 
     /**
      * Register a custom element in the binding map
@@ -196,13 +175,13 @@
       if (element.behaviors) {
         element.behaviors.forEach(function (behaviour) {
           if (behaviour.properties) {
-            Polymer.Base.extend(properties, behaviour.properties);
+            Object.assign(properties, behaviour.properties);
           }
         });
       }
 
       // own properties
-      Polymer.Base.extend(properties, element.properties);
+      Object.assign(properties, element.properties);
       return properties;
     },
 
@@ -461,10 +440,36 @@
     }
   };
 
-
-
-
   window.Interconnection = Interconnection;
+  
+  var load_dom = function () {
+    Polymer = window.Polymer;
+    Interconnection.__domObserver = new MutationObserver(function (mutations) {
+      mutations.forEach(function (mutation) {
+        // NodeList.forEach issues
+        [].forEach.call(mutation.addedNodes, function (added) {
+          if (Interconnection.isCustomelement(added)) {
+            Interconnection._registerElement(added);
+          }
+        });
 
+
+        [].forEach.call(mutation.removedNodes, function (removed) {
+          if (Interconnection.isCustomelement(removed)) {
+            Interconnection._unregisterElement(removed);
+          }
+        });
+      });
+    });
+
+    Interconnection.__domObserver.observe(body, mutation_conf);
+
+  };
+
+  if (!Polymer) {
+    window.addEventListener('WebComponentsReady', load_dom);
+  } else {
+    load_dom();
+  }
 })(window, document);
 

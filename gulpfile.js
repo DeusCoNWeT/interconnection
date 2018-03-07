@@ -3,6 +3,8 @@
 var gulp = require('gulp');
 var eslint = require('gulp-eslint');
 var jsdoc = require('gulp-jsdoc3');
+var minify = require('gulp-minify');
+
 
 var shieldBadgeReporter = require('istanbul-reporter-shield-badge');
 var istanbul = require('istanbul');
@@ -43,4 +45,17 @@ gulp.task('test', function (done) {
     configFile: __dirname + '/karma.conf.js',
     singleRun: true
   }, done).start();
+});
+
+gulp.task('compress', function () {
+  gulp.src('src/*.js')
+    .pipe(minify({
+      ext: {
+        src: '.js',
+        min: '.min.js'
+      },
+      exclude: ['tasks'],
+      ignoreFiles: ['.combo.js', '-min.js']
+    }))
+    .pipe(gulp.dest('dist'));
 });

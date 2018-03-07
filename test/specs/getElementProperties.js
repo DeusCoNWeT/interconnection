@@ -6,9 +6,6 @@
   var expect = chai.expect;
 
   before(function () {
-    // if (window.__html__) {
-    //   document.write(window.__html__['getElementProperties']);
-    // }
     interconnection = window.Interconnection;
     targetElement = document.querySelector('test-producer');
   });
