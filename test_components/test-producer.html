@@ -5,7 +5,7 @@
     <template>
         <style>
             :host {
-                display: block;
+                display: none;
             }
         </style>
         <span>Please enter text.</span>
@@ -22,7 +22,9 @@
                     type: String,
                     input: true,
                     output: true,
-                    description: ""
+                    description: "",
+                    notify: true,
+                    reflectToAttribute: true
                 },
                 testing: {
                     type: String,

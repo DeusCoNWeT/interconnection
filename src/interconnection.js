@@ -269,7 +269,7 @@
       }
 
       var fn = function (source, value, effect, old, fromAbove) {
-        target_el.set(target_prop, value);
+        setTimeout(function () { target_el.set(target_prop, value); }, 0);
       };
 
       target_map.createListener(source_el, source_prop, target_prop, fn);
@@ -441,7 +441,7 @@
   };
 
   window.Interconnection = Interconnection;
-  
+
   var load_dom = function () {
     Polymer = window.Polymer;
     Interconnection.__domObserver = new MutationObserver(function (mutations) {
