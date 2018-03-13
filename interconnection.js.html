@@ -1,4 +1,43 @@
-(function (window, document) {
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>interconnection.js - Documentation</title>
+
+    <script src="scripts/prettify/prettify.js"></script>
+    <script src="scripts/prettify/lang-css.js"></script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc.css">
+</head>
+<body>
+
+<input type="checkbox" id="nav-trigger" class="nav-trigger" />
+<label for="nav-trigger" class="navicon-button x">
+  <div class="navicon"></div>
+</label>
+
+<label for="nav-trigger" class="overlay"></label>
+
+<nav>
+    <h2><a href="index.html">Home</a></h2><h3>Classes</h3><ul><li><a href="ElementMap.html">ElementMap</a></li></ul><h3>Modules</h3><ul><li><a href="module-Interconnection.html">Interconnection</a><ul class='methods'><li data-type='method'><a href="module-Interconnection.html#._createEffect">_createEffect</a></li><li data-type='method'><a href="module-Interconnection.html#._notifyObservers">_notifyObservers</a></li><li data-type='method'><a href="module-Interconnection.html#._registerElement">_registerElement</a></li><li data-type='method'><a href="module-Interconnection.html#._unregisterElement">_unregisterElement</a></li><li data-type='method'><a href="module-Interconnection.html#.bind">bind</a></li><li data-type='method'><a href="module-Interconnection.html#.getBindingProperties">getBindingProperties</a></li><li data-type='method'><a href="module-Interconnection.html#.getCustomElements">getCustomElements</a></li><li data-type='method'><a href="module-Interconnection.html#.getElementProperties">getElementProperties</a></li><li data-type='method'><a href="module-Interconnection.html#.isBinded">isBinded</a></li><li data-type='method'><a href="module-Interconnection.html#.isConsumer">isConsumer</a></li><li data-type='method'><a href="module-Interconnection.html#.isCustomelement">isCustomelement</a></li><li data-type='method'><a href="module-Interconnection.html#.isProducer">isProducer</a></li><li data-type='method'><a href="module-Interconnection.html#.isPropertyBinded">isPropertyBinded</a></li><li data-type='method'><a href="module-Interconnection.html#.unbind">unbind</a></li><li data-type='method'><a href="module-Interconnection.html#.unbindConsumer">unbindConsumer</a></li><li data-type='method'><a href="module-Interconnection.html#.unbindElement">unbindElement</a></li><li data-type='method'><a href="module-Interconnection.html#.unbindProducer">unbindProducer</a></li></ul></li></ul>
+</nav>
+
+<div id="main">
+    
+    <h1 class="page-title">interconnection.js</h1>
+    
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>(function (window, document) {
 
   // Init
   var body = document.querySelector('html');
@@ -191,7 +230,7 @@
      * @return {Boolean} If it is a custom element or
      */
     isCustomelement: function (element) {
-      return element instanceof HTMLElement && element.is !== undefined;
+      return element instanceof HTMLElement &amp;&amp; element.is !== undefined;
     },
     /**
      * Take all the properties of an element differentiating between consuming and producing properties.
@@ -214,7 +253,7 @@
           prop_value.producer = true;
 
           // set as consumer
-          if (!properties.readOnly && !properties.computed) {
+          if (!properties.readOnly &amp;&amp; !properties.computed) {
             prop_value.consumer = true;
             bindingProperties.__consumers[prop_name] = prop_value;
           }
@@ -246,7 +285,7 @@
       var source_map = Interconnection.elementsMap.get(source_el);
       var target_map = Interconnection.elementsMap.get(target_el);
 
-      if (!this.isCustomelement(source_map) && !this.isCustomelement(target_el)) {
+      if (!this.isCustomelement(source_map) &amp;&amp; !this.isCustomelement(target_el)) {
         throw new Error('Both element must be custom elements');
       }
 
@@ -345,7 +384,7 @@
      */
     isConsumer: function (element, property) {
 
-      return this.elementsMap.has(element) && this.elementsMap.get(element).listeners[property] !== undefined;
+      return this.elementsMap.has(element) &amp;&amp; this.elementsMap.get(element).listeners[property] !== undefined;
     },
 
     /**
@@ -356,7 +395,7 @@
      */
     isProducer: function (element, property) {
       var map = this.elementsMap.get(element);
-      return map !== undefined && map.observers[property] !== undefined && map.observers[property].length > 0;
+      return map !== undefined &amp;&amp; map.observers[property] !== undefined &amp;&amp; map.observers[property].length > 0;
     },
 
     /**
@@ -473,3 +512,22 @@
   }
 })(window, document);
 
+</code></pre>
+        </article>
+    </section>
+
+
+
+
+</div>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.5.5</a> on Tue Mar 13 2018 15:54:59 GMT+0100 (CET) using the <a href="https://github.com/clenemt/docdash">docdash</a> theme.
+</footer>
+
+<script>prettyPrint();</script>
+<script src="scripts/linenumber.js"></script>
+</body>
+</html>
