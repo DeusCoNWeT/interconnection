@@ -269,7 +269,8 @@
       }
 
       var fn = function (source, value, effect, old, fromAbove) {
-        setTimeout(function () { target_el.set(target_prop, value); }, 0);
+        target_el.set(target_prop, value);
+        //setTimeout(function () { target_el.set(target_prop, value); }, 0);
       };
 
       target_map.createListener(source_el, source_prop, target_prop, fn);

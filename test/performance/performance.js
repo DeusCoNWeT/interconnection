@@ -161,18 +161,16 @@
             console.log( (end_time-start_time) + 'ms');
             for (i=0;i<N;i++){
               if (elements[i].text != new_value){
-                //console.error('Falla en el elemento ' + i + '. Deberia ser ' + new_value + ' y es ' + elements[i].text);
+                console.error('Falla en el elemento ' + i + '. Deberia ser ' + new_value + ' y es ' + elements[i].text);
                 change = false;
               }
             }
             for (var i = 0; i < N; i++) {
               elements[i + 1].removeEventListener('text-changed', cb);
             }
-            // if (change){
-              source.set('text',null);
-              for (var i = 0; i < N; i++) {
-                window.Interconnection.unbindElement(elements[i]);
-              // }
+            if (change){
+              source.set(source_prop, null);
+              window.Interconnection.unbindElement(source);
             }
             resolve({ end_time: end_time, start_time: start_time });
           }
@@ -183,8 +181,8 @@
       // Bind elements and add listenre
       for (var i = 0; i < N; i++) {
         elements[i + 1].addEventListener('text-changed', cb);
-        //window.Interconnection.bind(source, source_prop, elements[i + 1], target_prop);
-        window.Interconnection.bind(elements[i],target_prop, elements[i+1],target_prop);
+        window.Interconnection.bind(source, source_prop, elements[i + 1], target_prop);
+        //window.Interconnection.bind(elements[i],target_prop, elements[i+1],target_prop);
       }
 
       // execute plan
