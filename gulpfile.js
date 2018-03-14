@@ -4,7 +4,7 @@ var gulp = require('gulp');
 var eslint = require('gulp-eslint');
 var jsdoc = require('gulp-jsdoc3');
 var minify = require('gulp-minify');
-
+var ghPages = require('gulp-gh-pages');
 
 var shieldBadgeReporter = require('istanbul-reporter-shield-badge');
 var istanbul = require('istanbul');
@@ -58,4 +58,10 @@ gulp.task('compress', function () {
       ignoreFiles: ['.combo.js', '-min.js']
     }))
     .pipe(gulp.dest('dist'));
+});
+
+
+gulp.task('ghPages',['doc'], function(){
+  return gulp.src('./docs/**/*')
+    .pipe(ghPages());
 });

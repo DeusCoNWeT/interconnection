@@ -54,7 +54,7 @@ Interconnection.bind(comp1, 'text',comp2,'text');
 
 
 ## Documentation
-The documentation is available [here](https://deusconwet.github.io/interconnection_docs/)
+The documentation is available [here](https://deusconwet.github.io/interconnection)
 ## Performance
 
 ## Author
