@@ -8,7 +8,7 @@ The library creates a window property `Interconnection` with high level function
 
 Interconnection is done using [WeakMap](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/WeakMap) and [MutationObserver](https://developer.mozilla.org/en-US/docs/Web/API/MutationObserver). 
 
-WeakMap is used to keep track the binding information of the custom elements. Each key is a HTMLElement and their value is a Custom map of the componente [ElementsMap](https://deusconwet.github.io/interconnection_docs/ElementMap.html).
+WeakMap is used to keep track the binding information of the custom elements. Each key is a HTMLElement and their value is a Custom map of the componente [ElementsMap](https://deusconwet.github.io/interconnection/ElementMap.html).
 
 Suppose we have the following component
 
