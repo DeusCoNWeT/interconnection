@@ -1,3 +1,23 @@
+/*
+ * (C) Copyright 2018 Universidad Politécnica de Madrid.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *
+ * Contributors:
+ *     Miguel Ortega Moreno
+ */
+
+
 (function (window, document) {
 
   // Init
@@ -75,7 +95,7 @@
     // ¿Permitir N a N? Cambiar el modelo por una lista en ese caso. 
     // Empeora el problema de busqueda      
     if (this.listeners[target_prop]) {
-      throw new Error('Property ' + target_prop + 'is already connected');
+      throw new Error('Property ' + target_prop + ' is already connected');
     }
 
     this.listeners[target_prop] = listener;
@@ -140,20 +160,26 @@
     /**
      * Register an model property of a custom element in order to notify each time it changes
      * @param {HTMLElement} model Custom element model provided by polymer
-     * @param {String} property Model property that is listened to each time it changes
+     * @param {String} path Model path property that is listened to each time it changes
      */
-    _createEffect: function (model, property) {
+    _createEffect: function (model, path) {
       var name = model.is;
       this.__customEffects[name] = this.__customEffects[name] || {};
 
-      if (this.__customEffects[name][property] == undefined) {
-        var fx = Polymer.Bind.ensurePropertyEffects(model, property);
+      var props = model._getPathParts(path);
+      var base_prop = props[0];
+
+      if (this.__customEffects[name][base_prop] == undefined) {
+        var fx = Polymer.Bind.ensurePropertyEffects(model, base_prop);
+
         var propEffect = {
           kind: 'binding',
-          fn: Interconnection._notifyObservers
+          fn: Interconnection._notifyObservers,
+          pathFn: Interconnection._notifyObservers
         };
+
         fx.push(propEffect);
-        this.__customEffects[name][property] = propEffect;
+        this.__customEffects[name][path] = propEffect;
       }
     },
     /**
@@ -260,17 +286,29 @@
         target_map = Interconnection.elementsMap.get(target_el);
       }
 
-      if (!source_map.producers_prop[source_prop]) {
-        throw Error('Property "' + source_prop + '" is not a producer property');
+      // if path bind
+      var source_prop_base = Polymer.Path.root(source_prop);
+      var target_prop_base = Polymer.Path.root(target_prop);
+
+
+      if (!source_map.producers_prop[source_prop_base]) {
+        throw Error('Property "' + source_prop_base + '" is not a producer property');
       }
 
-      if (!target_map.producers_prop[target_prop]) {
-        throw Error('Property "' + target_prop + '" is not a producer property');
+      if (!target_map.producers_prop[target_prop_base]) {
+        throw Error('Property "' + target_prop_base + '" is not a producer property');
       }
 
-      var fn = function (source, value, effect, old, fromAbove) {
+      var fn = function (source, value, effect, old, fromAbove, dirtyCheck) {
+        // translate the path notification to new path
+        var notify_path = Polymer.Path.translate(source_prop, target_prop, source);
+        // If dirty check is true, do it https://www.polymer-project.org/1.0/docs/devguide/model-data#override-dirty-check
+        if (dirtyCheck) {
+          target_el.set(target_prop, null);
+        }
         target_el.set(target_prop, value);
-        //setTimeout(function () { target_el.set(target_prop, value); }, 0);
+
+        target_el.notifyPath(notify_path);
       };
 
       target_map.createListener(source_el, source_prop, target_prop, fn);
@@ -278,7 +316,7 @@
       this._createEffect(source_map.model, source_prop);
 
       // initialization
-      fn(source_prop, source_el[source_prop]);
+      fn(source_prop, source_el.get(source_prop), null, null, null, true);
     },
 
     /**
@@ -292,9 +330,41 @@
     _notifyObservers: function (source, value, effect, old, fromAbove) {
       var el_map = Interconnection.elementsMap.get(this);
       var observers = el_map.observers[source];
+      var parts = this._getPathParts(source);
 
       if (observers) {
         observers.forEach(function (observer) { observer.fn(source, value, effect, old, fromAbove); });
+      }
+      // Notify above
+      if (parts.length > 1) {
+        Interconnection._notifyAbove.call(this, source, value, effect, old, fromAbove);
+      }
+    },
+    /**
+     * Notify parents of changes in an object. Changes in `test.mytest` will be notified to `test`.
+     * In the same way, changes in `test.mytest.myvar` will be notified to `test` and `test.mytest`
+     * @param {String} source Path of the change source
+     * @param {Any} value Value of the change
+     * @param {Any} effect Effect defined for this type of notification (currently unused) 
+     * @param {Any} old Last value of the property
+     * @param {Any} fromAbove Provided by Polymer (currently unused)
+     */
+    _notifyAbove: function (source, value, effect, old, fromAbove) {
+      var observers, new_val, path;
+      var parts = this._getPathParts(source);
+      parts.pop();
+
+      var el_map = Interconnection.elementsMap.get(this);
+
+      // Notify all parents
+      while (parts.length > 0) {
+        path = parts.join('.');
+        observers = el_map.observers[path];
+        new_val = this.get(path);
+        if (observers) {
+          observers.forEach(function (observer) { observer.fn(source, new_val, effect, old, fromAbove); });
+        }
+        parts.pop();
       }
     },
     /**

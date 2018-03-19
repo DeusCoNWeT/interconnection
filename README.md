@@ -1,3 +1,5 @@
+![Code Coverage-shield-badge-1](https://img.shields.io/badge/Code%20Coverage-97.78%25-brightgreen.svg)
+
 ![Interconnection](https://i.imgur.com/yx31ubv.png)
 
 # Polymer Interconnection
