@@ -2,46 +2,52 @@
 <link rel="import" href="test-behavior.html">
 
 <dom-module id="test-object">
-    <template>
-        <style>
-            :host {
-                display: block;
+  <template>
+    <style>
+      :host {
+        display: block;
+      }
+    </style>
+    <input value={{deep.testx.x::input}}>
+    <input value={{deep.testy.y::input}}>
+    <p>testy.y: {{consumer.testy.y}} testx.x: {{consumer.testx.x}}</p>
+  </template>
+  <script>
+    Polymer({
+      is: 'test-object',
+      properties: {
+        deep: {
+          type: Object,
+          value: function () {
+            return {
+              testx: { x: 100 },
+              testy: { y: 100 }
             }
-        </style>
-        <input value={{prueba::input}}>
-        <input value={{deep.deep.y::input}}>
-        <p>testy.y: {{test.deep.y}} testx.x: {{test.testx.x}}</p>
-        <!-- <template is="dom-repeat" items="{{test}}">
-            <p>{{item}}</p>
-        </template> -->
-    </template>
-    <script>
-        Polymer({
-            is: 'test-object',
-            properties: {
-                deep: {
-                    type: Object,
-                    value: function () {
-                        return {
-                            testx: { x: 100 },
-                            deep: { y: 100 }
-                        }
-                    },
-                },
-                test: {
-                    type: Object,
-                    value: function () {
-                        return {};
-                    }
-                },
-                prueba:{
-                    type:String,
-                    value: 'hola'
-                }
-            },
-            getTest: function () {
-                return this.test
+          },
+        },
+        consumer: {
+          type: Object,
+          value: function () {
+            return {};
+          }
+        },
+        singleObject: {
+          type: Object,
+          value: function () {
+            return { x: 100, y: 100 }
+          }
+        },
+        doubleKey: {
+          type: Object,
+          value: function () {
+            return {
+              doubleKey: {
+                x: 100
+              }
             }
-        });
-    </script>
+          }
+        }
+      }
+    });
+  </script>
 </dom-module>
