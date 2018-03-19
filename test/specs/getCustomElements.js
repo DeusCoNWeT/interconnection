@@ -31,7 +31,6 @@
       var list = interconnection.getCustomElements();
       assert.instanceOf(list, NodeList, 'Should be an HTMLElement');
       assert.isNotEmpty(list, 'It should not be an empty array');
-      assert.lengthOf(list, document.querySelectorAll('test-producer').length, 'Length should be 3');
       list.forEach(function (element) {
         assert.instanceOf(element, HTMLElement, 'Should be an HTMLElement');
       });
