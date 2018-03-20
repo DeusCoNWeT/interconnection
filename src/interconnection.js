@@ -250,12 +250,12 @@
       }
       return bindingProperties;
     },
-    _makeCopy: function(property){
+    _makeCopy: function (property) {
       var copy;
 
-      if (property instanceof Array){
+      if (property instanceof Array) {
         copy = JSON.parse(JSON.stringify(property));
-      } else if(property instanceof Object){
+      } else if (property instanceof Object) {
         copy = JSON.parse(JSON.stringify(property));
       } else {
         copy = property;
@@ -314,28 +314,16 @@
       var fn = function (source, value, effect, old, fromAbove, dirtyCheck) {
         // translate the path notification to new path
         var notify_path = Polymer.Path.translate(source_prop, target_prop, source);
-        //var is_array = value && value.keySplices !== undefined && value.indexSplices !== undefined;
-        var is_array = false;
+        var is_array = value && value.keySplices !== undefined && value.indexSplices !== undefined;
         // If dirty check is true, do it https://www.polymer-project.org/1.0/docs/devguide/model-data#override-dirty-check
 
         if (dirtyCheck) {
           target_el.set(target_prop, null);
         }
+        // REVIEW: each time that array change a new array is created. Should use 
+        target_el.set(target_prop, Interconnection._makeCopy(value));
 
-        if (is_array) {
-          // remove splice
-
-          var actions = value.keySplices[0];
-
-          // removed
-          actions.removed.forEach(function (idx) {
-            target_el.arrayDelete(target_prop + '.' + idx);
-          });
-        } else {
-          target_el.set(target_prop, Interconnection._makeCopy(value));
-
-          target_el.notifyPath(notify_path);
-        }
+        target_el.notifyPath(notify_path);
 
       };
 
@@ -357,9 +345,7 @@
      * @param {Any} fromAbove Provided by Polymer (currently unused)
      */
     _notifyObservers: function (source, value, effect, old, fromAbove) {
-      //var is_array = value.keySplices !== undefined && value.indexSplices !== undefined;
-      var is_array = false;
-      source = is_array ? source.replace(/\.splices$/, '') : source;
+      var is_array = value && value.keySplices !== undefined && value.indexSplices !== undefined;
 
       var el_map = Interconnection.elementsMap.get(this);
       var parts = this._getPathParts(source);
@@ -372,7 +358,7 @@
       }
 
       // Notify above
-      if (parts.length > 1) {
+      if (parts.length > 1 && !is_array) {
         Interconnection._notifyAbove.call(this, source, value, effect, old, fromAbove);
       }
     },
@@ -389,7 +375,7 @@
       var observers, new_val, path;
       var parts = this._getPathParts(source);
       parts.pop();
-      
+
       var el_map = Interconnection.elementsMap.get(this);
 
       // Notify all parents

@@ -5,32 +5,32 @@
   <template>
     <style>
       :host {
-        display: block;
+        display: inline-block;
       }
       p{
         margin:3px 0;
       }
     </style>
-    <p>Lista de elementos: {{test.length}}</p>
-    <template is="dom-repeat" items="{{test}}">
-      <p>{{item}}</p>
+    <p>Lista de test: {{simpleArray.length}}</p>
+    <template is="dom-repeat" items="{{simpleArray}}">
+    <p>{{item.a}}, </p>
     </template>
-    <p>Lista de prueba: {{prueba.length}}</p>
-    <template is="dom-repeat" items="{{prueba}}">
-        <p>{{item}}</p>
+    <p>Lista de prueba: {{consumer.length}}</p>
+    <template is="dom-repeat" items="{{consumer}}">
+      <p>{{item.a}}, </p>
     </template>
   </template>
   <script>
     Polymer({
       is: 'test-array',
       properties: {
-        test: {
+        simpleArray: {
           type: Array,
           value: function(){
-            return ['a','b','c','d'];
+            return [{a:'a'},{a:'b'},{a:'c'},{a:'d'}];
           }
         },
-        prueba: {
+        consumer: {
           type:Array,
           value: function(){
             return [];
