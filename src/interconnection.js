@@ -250,7 +250,19 @@
       }
       return bindingProperties;
     },
+    _makeCopy: function(property){
+      var copy;
 
+      if (property instanceof Array){
+        copy = JSON.parse(JSON.stringify(property));
+      } else if(property instanceof Object){
+        copy = JSON.parse(JSON.stringify(property));
+      } else {
+        copy = property;
+      }
+
+      return copy;
+    },
     /**
      * Connect source property to target property properties of two elements. Source property will write data on consumer property
      * 
@@ -302,21 +314,38 @@
       var fn = function (source, value, effect, old, fromAbove, dirtyCheck) {
         // translate the path notification to new path
         var notify_path = Polymer.Path.translate(source_prop, target_prop, source);
+        //var is_array = value && value.keySplices !== undefined && value.indexSplices !== undefined;
+        var is_array = false;
         // If dirty check is true, do it https://www.polymer-project.org/1.0/docs/devguide/model-data#override-dirty-check
+
         if (dirtyCheck) {
           target_el.set(target_prop, null);
         }
-        target_el.set(target_prop, value);
 
-        target_el.notifyPath(notify_path);
+        if (is_array) {
+          // remove splice
+
+          var actions = value.keySplices[0];
+
+          // removed
+          actions.removed.forEach(function (idx) {
+            target_el.arrayDelete(target_prop + '.' + idx);
+          });
+        } else {
+          target_el.set(target_prop, Interconnection._makeCopy(value));
+
+          target_el.notifyPath(notify_path);
+        }
+
       };
+
 
       target_map.createListener(source_el, source_prop, target_prop, fn);
       source_map.createObserver(source_prop, target_el, target_prop, fn);
       this._createEffect(source_map.model, source_prop);
 
       // initialization
-      fn(source_prop, source_el.get(source_prop), null, null, null, true);
+      fn.call(this, source_prop, source_el.get(source_prop), null, null, null, true);
     },
 
     /**
@@ -328,13 +357,20 @@
      * @param {Any} fromAbove Provided by Polymer (currently unused)
      */
     _notifyObservers: function (source, value, effect, old, fromAbove) {
+      //var is_array = value.keySplices !== undefined && value.indexSplices !== undefined;
+      var is_array = false;
+      source = is_array ? source.replace(/\.splices$/, '') : source;
+
       var el_map = Interconnection.elementsMap.get(this);
-      var observers = el_map.observers[source];
       var parts = this._getPathParts(source);
+
+
+      var observers = el_map.observers[source];
 
       if (observers) {
         observers.forEach(function (observer) { observer.fn(source, value, effect, old, fromAbove); });
       }
+
       // Notify above
       if (parts.length > 1) {
         Interconnection._notifyAbove.call(this, source, value, effect, old, fromAbove);
@@ -353,7 +389,7 @@
       var observers, new_val, path;
       var parts = this._getPathParts(source);
       parts.pop();
-
+      
       var el_map = Interconnection.elementsMap.get(this);
 
       // Notify all parents
@@ -361,6 +397,7 @@
         path = parts.join('.');
         observers = el_map.observers[path];
         new_val = this.get(path);
+
         if (observers) {
           observers.forEach(function (observer) { observer.fn(source, new_val, effect, old, fromAbove); });
         }
