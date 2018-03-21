@@ -67,17 +67,17 @@ The documentation is available [here](https://deusconwet.github.io/interconnecti
 ### Polymer versions
 - [x] Polymer 1.2
 - [x] Polymer 1.11
-- [ ] Polymer 2
-- [ ] Polymer 3
+- [ ] Polymer 2 (not tested)
+- [ ] Polymer 3 (not tested)
 
 ### Navigators
 
 - [x] Chrome
 - [x] Firefox
 - [x] Opera
-- [?] Safari
-- [?] IE
-- [?] Edge
+- [ ] Safari (not tested)
+- [ ] IE (not tested)
+- [ ] Edge (not tested)
 
 
 
