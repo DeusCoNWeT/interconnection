@@ -25,22 +25,30 @@
     var n_elements = 1e4;
     before(function (done) {
 
-      var target_container = document.querySelector('#container');
-      
-      // generate dom
-      for (var i = 0; i < n_elements; i++) {
-        var el = document.createElement('test-producer');
-        elements.push(el);
-        target_container.append(el);
+      var cb = function () {
+        var target_container = document.querySelector('#container');
+
+        // generate dom
+        for (var i = 0; i < n_elements; i++) {
+          var el = document.createElement('test-producer');
+          elements.push(el);
+          target_container.append(el);
+        }
+        source = elements[0];
+        done();
+      };
+
+      if (!window.Polymer) {
+        window.addEventListener('WebComponentsReady', cb);
+      } else {
+        cb();
       }
-      source = elements[0];
-      window.setTimeout(done, 500);
     });
 
 
     it('bind 999 to 1', function (done) {
       var times = 0;
-      var N = n_elements-1;
+      var N = n_elements - 1;
       var callbacks = function (n) {
         return function () {
           times++;
@@ -50,14 +58,14 @@
               elements[i].removeEventListener('text-changed', callbacks(N));
             }
             for (var i = 1; i < n_elements; i++) {
-              assert.equal(elements[0][source_prop], elements[i][target_prop], `Element ${i} should be equals to element 0`)
+              assert.equal(elements[0][source_prop], elements[i][target_prop], 'Element ' + i +' should be equals to element 0')
             }
             done();
           }
         };
       };
 
-      
+
       for (var i = 1; i < n_elements; i++) {
         elements[i].addEventListener('text-changed', callbacks(N));
         if (i > 0) {

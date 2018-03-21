@@ -5,7 +5,7 @@
     <template>
         <style>
             :host {
-                display: none;
+                display: block;
             }
         </style>
         <span>Please enter text.</span>
@@ -31,6 +31,10 @@
                     input: true,
                     output: true,
                     description: ""
+                },
+                onlyProducer: {
+                  type: String,
+                  readOnly: true
                 }
             }
         });

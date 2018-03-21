@@ -25,13 +25,21 @@
   var el1, el2, el3, el4;
   var prop1 = 'text', prop2 = 'testing';
 
-  before(function () {
-    interconnection = window.Interconnection;
-    testProducers = document.querySelectorAll('test-producer');
-    el1 = testProducers[0];
-    el2 = testProducers[1];
-    el3 = testProducers[2];
-    el4 = testProducers[3];
+  before(function (done) {
+    var cb = function(){
+      interconnection = window.Interconnection;
+      testProducers = document.querySelectorAll('test-producer');
+      el1 = testProducers[0];
+      el2 = testProducers[1];
+      el3 = testProducers[2];
+      el4 = testProducers[3];
+      done();
+    };
+    if (!window.Polymer){
+      window.addEventListener('WebComponentsReady', cb);
+    } else {
+      cb();
+    }
   });
 
   describe('Check binding string properties', function () {
@@ -55,19 +63,19 @@
     });
 
     it('Unbinding element consumer', function () {
-      try{
+      try {
         interconnection.unbindConsumer();
-        assert.fail(null,null, 'element is not defined. Should throw an error');
-      } catch(err){
-        assert.instanceOf(err, Error, 'Should throw an error');
+        assert.fail(null, null, 'element is not defined. It should throw an error');
+      } catch (err) {
+        assert.instanceOf(err, Error, 'It should throw an error');
       }
       var noCE = document.querySelector('#noCustomElement');
 
-      try{
-        interconnection.unbindConsumer(noCE,null);
-        assert.fail(null,null, 'element is not a custom element. Should throw an error');
-      } catch(err){
-        assert.instanceOf(err, Error, 'Should throw an error');
+      try {
+        interconnection.unbindConsumer(noCE, null);
+        assert.fail(0, 1, 'element is not a custom element. It should throw an error');
+      } catch (err) {
+        assert.instanceOf(err, Error, 'It should throw an error');
       }
 
 
@@ -84,19 +92,19 @@
 
     it('Unbinding element producer with only one consume', function () {
 
-      try{
+      try {
         interconnection.unbindProducer();
-        assert.fail(null,null, 'element is not defined. Should throw an error');
-      } catch(err){
-        assert.instanceOf(err, Error, 'Should throw an error');
+        assert.fail(null, null, 'element is not defined. It should throw an error');
+      } catch (err) {
+        assert.instanceOf(err, Error, 'It should throw an error');
       }
       var noCE = document.querySelector('#noCustomElement');
 
-      try{
-        interconnection.unbindProducer(noCE,null);
-        assert.fail(null,null, 'element is not a custom element. Should throw an error');
-      } catch(err){
-        assert.instanceOf(err, Error, 'Should throw an error');
+      try {
+        interconnection.unbindProducer(noCE, null);
+        assert.fail(0, 1, 'element is not a custom element. It should throw an error');
+      } catch (err) {
+        assert.instanceOf(err, Error, 'It should throw an error');
       }
 
       interconnection.unbindProducer(el2, prop1);
@@ -104,17 +112,17 @@
       el2.set(prop1, 'testing 2');
       assert.notEqual(el2[prop1], el3[prop1], 'After unbind a producer, both properties change at same time');
     });
-    it('Unbind an element', function(){
+    it('Unbind an element', function () {
       interconnection.bind(el1, prop1, el2, prop1);
       interconnection.bind(el2, prop1, el3, prop1);
 
-      interconnection.bind(el1,prop2,el3,prop2);
+      interconnection.bind(el1, prop2, el3, prop2);
 
       interconnection.unbindElement(el2);
       assert.isTrue(interconnection.isPropertyBinded(el1, prop2), 'Element 1 should be binded');
       assert.isFalse(interconnection.isBinded(el2), 'Element 2 should be unbinded');
       assert.isTrue(interconnection.isPropertyBinded(el3, prop2), 'Element 3 should be binded');
-      
+
       interconnection.unbindElement(el1);
       assert.isFalse(interconnection.isPropertyBinded(el3, prop2), 'Element 3 should be unbinded');
     });
@@ -153,7 +161,7 @@
 
       try {
         interconnection.bind(el1, prop2, el2, prop1);
-        assert.fail(null, null, 'Must be throw an error. A property cannot be binded to two sources');
+        assert.fail(0, 1, 'Must be throw an error. A property cannot be binded to two sources');
       } catch (err) {
         assert.instanceOf(err, Error, 'Error should be an instance of Error');
         interconnection.unbindProducer(el1, prop1);
@@ -188,23 +196,23 @@
 
       try {
         interconnection.bind(noCE, 'text', el1, prop1);
-        assert.fail(null, null, 'Should throw an error if consumer is not a custom element');
+        assert.fail(0, 1, 'It should throw an error if consumer is not a custom element');
       } catch (err) {
-        assert.instanceOf(err, Error, 'Should be instance of error');
+        assert.instanceOf(err, Error, 'It should be instance of error');
       }
 
       try {
         interconnection.bind(el1, prop1, noCE, 'text');
-        assert.fail(null, null, 'Should throw an error if producer is not a custom element');
+        assert.fail(0, 1, 'It should throw an error if producer is not a custom element');
       } catch (err) {
-        assert.instanceOf(err, Error, 'Should be instance of error');
+        assert.instanceOf(err, Error, 'It should be instance of error');
       }
 
       try {
         interconnection.bind(noCE, 'text', noCE2, 'text');
-        assert.fail(null, null, 'Should throw an error if both are not custom elements');
+        assert.fail(0, 1, 'It should throw an error if both are not custom elements');
       } catch (err) {
-        assert.instanceOf(err, Error, 'Should be instance of error');
+        assert.instanceOf(err, Error, 'It should be instance of error');
       }
 
 
@@ -214,23 +222,23 @@
     it('Try to bind not HTMLElements', function () {
       try {
         interconnection.bind('', 'text', el1, prop1);
-        assert.fail(null, null, 'Should throw an error if consumer is not a HTMLElement');
+        assert.fail(0, 1, 'It should throw an error if consumer is not a HTMLElement');
       } catch (err) {
-        assert.instanceOf(err, Error, 'Should be instance of error');
+        assert.instanceOf(err, Error, 'It should be instance of error');
       }
 
       try {
         interconnection.bind(el1, prop1, '', 'text');
-        assert.fail(null, null, 'Should throw an error if producer is not a HTMLElement');
+        assert.fail(0, 1, 'It should throw an error if producer is not a HTMLElement');
       } catch (err) {
-        assert.instanceOf(err, Error, 'Should be instance of error');
+        assert.instanceOf(err, Error, 'It should be instance of error');
       }
 
       try {
         interconnection.bind('', 'text', '', 'text');
-        assert.fail(null, null, 'Should throw an error if both are not HTMLElements');
+        assert.fail(0, 1, 'It should throw an error if both are not HTMLElements');
       } catch (err) {
-        assert.instanceOf(err, Error, 'Should be instance of error');
+        assert.instanceOf(err, Error, 'It should be instance of error');
       }
     });
 
@@ -238,52 +246,79 @@
 
       try {
         interconnection.bind(el1, prop1, el1, prop1);
-        assert.fail(null, null, 'Should throw an error if consumer and producer are the same element');
+        assert.fail(0, 1, 'It should throw an error if consumer and producer are the same element');
       } catch (err) {
-        assert.instanceOf(err, Error, 'Should be an error');
+        assert.instanceOf(err, Error, 'It should be an error');
       }
     });
 
     it('Trying to connect empty element', function () {
       try {
         interconnection.bind(null, undefined, el2, prop1);
-        assert.fail(null, null, 'Should throw an error if consumer element is empty');
+        assert.fail(0, 1, 'It should throw an error if consumer element is empty');
       } catch (err) {
-        assert.instanceOf(err, Error, 'Should be an error');
+        assert.instanceOf(err, Error, 'It should be an error');
       }
       try {
         interconnection.bind(el1, prop1, null, undefined);
-        assert.fail(null, null, 'Should throw an error if producer element is empty');
+        assert.fail(0, 1, 'It should throw an error if producer element is empty');
       } catch (err) {
-        assert.instanceOf(err, Error, 'Should be an error');
+        assert.instanceOf(err, Error, 'It should be an error');
       }
       try {
         interconnection.bind(null, undefined, null, undefined);
-        assert.fail(null, null, 'Should throw an error if consumer and producer element are empty');
+        assert.fail(0, 1, 'It should throw an error if consumer and producer element are empty');
       } catch (err) {
-        assert.instanceOf(err, Error, 'Should be an error');
+        assert.instanceOf(err, Error, 'It should be an error');
       }
     });
     it('Trying to connect unknow property', function () {
 
       try {
         interconnection.bind(el1, undefined, el2, prop1);
-        assert.fail(null, null, 'Should throw an error if consumer property is empty');
+        assert.fail(0, 1, 'It should throw an error if consumer property is empty');
       } catch (err) {
-        assert.instanceOf(err, Error, 'Should be an error');
+        assert.instanceOf(err, Error, 'It should be an error');
       }
       try {
-        interconnection.bind(el1, prop1, el2, undefined);
-        assert.fail(null, null, 'Should throw an error if producer property is empty');
+        interconnection.bind(el1, prop1, el2, '');
+        assert.fail(0, 1, 'It should throw an error if producer property is empty');
       } catch (err) {
-        assert.instanceOf(err, Error, 'Should be an error');
+        assert.instanceOf(err, Error, 'It should be an error');
       }
       try {
         interconnection.bind(el1, undefined, el2, undefined);
-        assert.fail(null, null, 'Should throw an error if consumer and producer property are empty');
+        assert.fail(0, 1, 'It should throw an error if consumer and producer property are empty');
       } catch (err) {
-        assert.instanceOf(err, Error, 'Should be an error');
+        assert.instanceOf(err, Error, 'It should be an error');
       }
+
+      try {
+        interconnection.bind(el1, prop1, el2, 'undefined');
+        assert.fail(0, 1, 'It should throw an error if consumer is not a consumer property');
+      } catch (err) {
+        assert.instanceOf(err, Error, 'It should be an error');
+      }
+
+      interconnection.unbindElement(el1);
+    });
+
+    it('Trying to connect readonly property', function(){
+      try {
+        interconnection.bind(el1, prop1, el2, 'onlyProducer');
+        assert.fail(0, 1, 'It should throw an error if consumer property is read only');
+      } catch (err) {
+        assert.instanceOf(err, Error, 'It should be an error');
+      }
+
+      try{
+        interconnection.bind(el1,'onlyProducer', el2, prop1);
+
+      } catch(err){
+        assert.fail(0,1, 'It should not throw an error binding a readOnly property as consumer');
+      }
+      interconnection.unbindElement(el1);
+
     });
 
     it('Check if a custom element is binded', function () {
@@ -300,30 +335,30 @@
     it('Check if a custom element property is binded', function () {
 
       assert.isFalse(interconnection.isPropertyBinded(el1, prop1), 'Element 1 text is not binded');
-      assert.isFalse(interconnection.isPropertyBinded(el1, null), 'Should be false. Property is not defined');
-      assert.isFalse(interconnection.isPropertyBinded(null, null), 'Should be false. Element is not defined');
+      assert.isFalse(interconnection.isPropertyBinded(el1, null), 'It should be false. Property is not defined');
+      assert.isFalse(interconnection.isPropertyBinded(null, null), 'It should be false. Element is not defined');
 
       interconnection.bind(el1, prop1, el2, prop1);
-      
-      assert.isTrue(interconnection.isPropertyBinded(el1,prop1), 'Element 1 text is binded with element 2 text');
-      assert.isTrue(interconnection.isPropertyBinded(el1,prop1), 'Element 2 text is binded with element 1 text');
-      
+
+      assert.isTrue(interconnection.isPropertyBinded(el1, prop1), 'Element 1 text is binded with element 2 text');
+      assert.isTrue(interconnection.isPropertyBinded(el1, prop1), 'Element 2 text is binded with element 1 text');
+
       interconnection.unbindElement(el1);
 
     });
 
-    
-    it('Check if a property is consuming or producing data', function(){
 
-      assert.isFalse(interconnection.isConsumer(el1,prop1), 'Element 1 text is not consuming data');
-      assert.isFalse(interconnection.isProducer(el1,prop1), 'Element 1 text is not producing data');
+    it('Check if a property is consuming or producing data', function () {
+
+      assert.isFalse(interconnection.isConsumer(el1, prop1), 'Element 1 text is not consuming data');
+      assert.isFalse(interconnection.isProducer(el1, prop1), 'Element 1 text is not producing data');
 
       interconnection.bind(el1, prop1, el2, prop1);
-      assert.isTrue(interconnection.isConsumer(el2,prop1), 'Element 2 text is consuming data');
-      assert.isTrue(interconnection.isProducer(el1,prop1), 'Element 1 text is producing data');
+      assert.isTrue(interconnection.isConsumer(el2, prop1), 'Element 2 text is consuming data');
+      assert.isTrue(interconnection.isProducer(el1, prop1), 'Element 1 text is producing data');
 
       interconnection.unbindElement(el1);
-    
+
     });
 
   });

@@ -50,19 +50,26 @@ module.exports = function (config) {
       }
     },
 
-    reporters: ['mocha', 'coverage'],
-
+    reporters: ['summary', 'coverage'],
+    summaryReporter: {
+      // 'failed', 'skipped' or 'all'
+      show: 'all',
+      // Limit the spec label to this length
+      specLength: 100,
+      // Show an 'all' column as a summary
+      overviewColumn: true
+    },
     coverageReporter: {
       dir: 'coverage/',
       reporters: [
-        { 
-          type:'html'
+        {
+          type: 'html'
         },
         {
           type: 'text'
         },
-        { 
-          type: function() {
+        {
+          type: function () {
             var shieldBadgeReporter = require('istanbul-reporter-shield-badge');
             var istanbul = require('istanbul');
             istanbul.Report.register(shieldBadgeReporter);
@@ -71,7 +78,7 @@ module.exports = function (config) {
           subdir: '.',
           coverageType: 'statements',
           range: [75, 90],
-          subject: 'Code Coverage', 
+          subject: 'Code Coverage',
           readmeFilename: 'README.md',
           readmeDir: path.resolve(__dirname) // i.e. if karma.conf.js is located in test/unit from the root folder of your project
         }
@@ -86,7 +93,7 @@ module.exports = function (config) {
 
     autoWatch: false,
 
-    browsers: ['Chrome'],
+    browsers: ['Firefox','Opera', 'Chrome'],
 
     singleRun: true,
     proxies: {

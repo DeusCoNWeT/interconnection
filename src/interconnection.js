@@ -26,8 +26,8 @@
   var mutation_conf = { childList: true, subtree: true };
 
   /**
-   * @class ElementMap 
-   * @classdesc Class to create a binding class of a HTMLElement 
+   * @class ElementMap
+   * @classdesc Class to create a binding class of a HTMLElement
    * @param {HTMLElement} element Element that will be mapped
    * @property {Object} properties Properties of the HTMLElement. Include inherit properties
    * @property {Object} consumers_prop Data consuming properties
@@ -74,7 +74,7 @@
   };
 
   /**
-   * 
+   *
    * @param {HTMLElement} source_element Element from which data is to be consumed
    * @param {String} source_property Property of the element form which data is to be consumed
    * @param {String} target_prop Property where data will be written when the source property changes
@@ -92,8 +92,8 @@
     };
 
     // REVIEW: Solo se permite que una variable consuma datos de una fuente.
-    // ¿Permitir N a N? Cambiar el modelo por una lista en ese caso. 
-    // Empeora el problema de busqueda      
+    // ¿Permitir N a N? Cambiar el modelo por una lista en ese caso.
+    // Empeora el problema de busqueda
     if (this.listeners[target_prop]) {
       throw new Error('Property ' + target_prop + ' is already connected');
     }
@@ -223,7 +223,7 @@
      * Take all the properties of an element differentiating between consuming and producing properties.
      * A property is consumer and producer unless readOnly is set to true
      * @param {HTMLElement} element Custom element from which the properties are to be obtained
-     * @return {Object} Object with all the properties of the element and the __cosumers 
+     * @return {Object} Object with all the properties of the element and the __cosumers
      * and __producers variables that include each of the properties that consume and produce
      * data respectively.
      */
@@ -240,7 +240,7 @@
           prop_value.producer = true;
 
           // set as consumer
-          if (!properties.readOnly && !properties.computed) {
+          if (!prop_value.readOnly && !prop_value.computed) {
             prop_value.consumer = true;
             bindingProperties.__consumers[prop_name] = prop_value;
           }
@@ -265,7 +265,7 @@
     },
     /**
      * Connect source property to target property properties of two elements. Source property will write data on consumer property
-     * 
+     *
      * @param {HTMLElement} el_source Element that will produce the data
      * @param {String} prop_source Property that will produce the data
      * @param {HTMLElement} el_target Element that will consume the data
@@ -277,6 +277,9 @@
         throw new Error('Source and target element must be a HTMLElement');
       }
 
+      if (!source_prop || !target_prop){
+        throw new Error('Source or target property are empty');
+      }
       if (source_el == target_el) {
         throw new Error('Cannot bind the same element');
       }
@@ -307,22 +310,20 @@
         throw Error('Property "' + source_prop_base + '" is not a producer property');
       }
 
-      if (!target_map.producers_prop[target_prop_base]) {
-        throw Error('Property "' + target_prop_base + '" is not a producer property');
+      if (!target_map.consumers_prop[target_prop_base]) {
+        throw Error('Property "' + target_prop_base + '" is not a consumer property');
       }
 
       var fn = function (source, value, effect, old, fromAbove, dirtyCheck) {
         // translate the path notification to new path
         var notify_path = Polymer.Path.translate(source_prop, target_prop, source);
-        var is_array = value && value.keySplices !== undefined && value.indexSplices !== undefined;
+        var is_array = value && value.keySplices !== undefined;
         // If dirty check is true, do it https://www.polymer-project.org/1.0/docs/devguide/model-data#override-dirty-check
 
         if (dirtyCheck) {
           target_el.set(target_prop, null);
         }
-        // REVIEW: each time that array change a new array is created. Should use 
         target_el.set(target_prop, Interconnection._makeCopy(value));
-
         target_el.notifyPath(notify_path);
 
       };
@@ -340,7 +341,7 @@
      * Function to notify to all observer that a property of an element has changed
      * @param {String} source Property that produce the change
      * @param {Any} value New value of the property
-     * @param {Any} effect Effect defined for this type of notification (currently unused) 
+     * @param {Any} effect Effect defined for this type of notification (currently unused)
      * @param {Any} old Last value of the property
      * @param {Any} fromAbove Provided by Polymer (currently unused)
      */
@@ -367,7 +368,7 @@
      * In the same way, changes in `test.mytest.myvar` will be notified to `test` and `test.mytest`
      * @param {String} source Path of the change source
      * @param {Any} value Value of the change
-     * @param {Any} effect Effect defined for this type of notification (currently unused) 
+     * @param {Any} effect Effect defined for this type of notification (currently unused)
      * @param {Any} old Last value of the property
      * @param {Any} fromAbove Provided by Polymer (currently unused)
      */

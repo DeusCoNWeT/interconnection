@@ -23,9 +23,18 @@
   var assert = chai.assert;
   var expect = chai.expect;
 
-  before(function () {
-    interconnection = window.Interconnection;
-    targetElement = document.querySelector('test-producer');
+  before(function (done) {
+    var cb = function () {
+      interconnection = window.Interconnection;
+      targetElement = document.querySelector('test-producer');
+      done();
+    };
+
+    if (!window.Polymer) {
+      window.addEventListener('WebComponentsReady', cb);
+    } else {
+      cb();
+    }
   });
 
   describe('Check getElementProperties', function () {

@@ -7,17 +7,18 @@
       :host {
         display: inline-block;
       }
-      p{
-        margin:3px 0;
+
+      p {
+        margin: 3px 0;
       }
     </style>
     <p>Lista de test: {{simpleArray.length}}</p>
     <template is="dom-repeat" items="{{simpleArray}}">
-    <p>{{item.a}}, </p>
+      <p>{{item}}, </p>
     </template>
     <p>Lista de prueba: {{consumer.length}}</p>
     <template is="dom-repeat" items="{{consumer}}">
-      <p>{{item.a}}, </p>
+      <p>{{item}}, </p>
     </template>
   </template>
   <script>
@@ -26,16 +27,22 @@
       properties: {
         simpleArray: {
           type: Array,
-          value: function(){
-            return [{a:'a'},{a:'b'},{a:'c'},{a:'d'}];
+          value: function () {
+            return ['a', 'b', 'c', 'd'];
           }
         },
         consumer: {
-          type:Array,
-          value: function(){
+          type: Array,
+          value: function () {
             return [];
           }
-        }
+        },
+        arrayObject: {
+          type: Array,
+          value: function () {
+            return [{ a: 'a' }, { a: 'b' }, { a: 'c' }, { a: 'd' }];
+          }
+        },
       }
     });
   </script>

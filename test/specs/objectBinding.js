@@ -24,11 +24,20 @@
     var assert = chai.assert;
     var expect = chai.expect;
 
-    before(function () {
-      interconnection = window.Interconnection;
-      el1 = document.querySelector('#test-object');
-      el2 = document.querySelector('#test-object2');
-      el3 = document.querySelector('#test-object3');
+    before(function (done) {
+      var cb = function () {
+        interconnection = window.Interconnection;
+        el1 = document.querySelector('#test-object');
+        el2 = document.querySelector('#test-object2');
+        el3 = document.querySelector('#test-object3');
+        done();
+      };
+
+      if (!window.Polymer) {
+        window.addEventListener('WebComponentsReady', cb);
+      } else {
+        cb();
+      }
     });
 
 
@@ -95,47 +104,47 @@
 
       el1.set('deep.testx', { y: 2 });
       assert.isUndefined(el2.consumer.x, 'Consumer doesnt change. consumer.x exist and el1 remove it');
-      assert.deepEqual(el1.deep.testx, el2.consumer,'El2 has not the same properties that el1. el2.consumer has not change');
+      assert.deepEqual(el1.deep.testx, el2.consumer, 'El2 has not the same properties that el1. el2.consumer has not change');
 
       interconnection.unbindElement(el1);
     });
 
-    it('multiple level ', function(){
-      interconnection.bind(el1,'deep',el2,'consumer');
-      interconnection.bind(el1,'deep.testx',el3,'consumer');
+    it('multiple level ', function () {
+      interconnection.bind(el1, 'deep', el2, 'consumer');
+      interconnection.bind(el1, 'deep.testx', el3, 'consumer');
 
       el1.set('deep.testy.y', 3);
 
-      assert.deepEqual(el1.deep, el2.consumer,'El2 has not the same properties that el1. deep.testx changed but not in el2');
+      assert.deepEqual(el1.deep, el2.consumer, 'El2 has not the same properties that el1. deep.testx changed but not in el2');
       assert.deepEqual(el2.testx, el3.consumer.testx, 'El3 has not the same properties that el1. deep.testx changed but not in el3');
 
       el1.set('deep.testx.x', 3);
-      assert.deepEqual(el1.deep, el2.consumer,'El2 has not the same properties that el1. deep.testx changed but not in el2');
+      assert.deepEqual(el1.deep, el2.consumer, 'El2 has not the same properties that el1. deep.testx changed but not in el2');
       assert.deepEqual(el2.testx, el3.consumer.testx, 'El3 has not the same properties that el1. deep.testx changed but not in el3');
-      
+
       interconnection.unbindElement(el1);
       interconnection.unbindElement(el2);
     });
 
-    it('test an object with duplicated keys value object', function(){
+    it('test an object with duplicated keys value object', function () {
 
-      interconnection.bind(el1,'doubleKey', el2,'consumer');
+      interconnection.bind(el1, 'doubleKey', el2, 'consumer');
 
       assert.deepEqual(el1.doubleKey, el2.consumer, 'el1 and el2 are not equals after binding');
-      
+
       el1.set('doubleKey.doubleKey.x', 4);
-      assert.deepEqual(el2.consumer,el1.doubleKey, 'El2 has not the same properties that el1. doubleKey.doubleKey.x changed but not in el2');
+      assert.deepEqual(el2.consumer, el1.doubleKey, 'El2 has not the same properties that el1. doubleKey.doubleKey.x changed but not in el2');
 
       interconnection.unbindElement(el1);
     });
 
-    it('consumer cant change the producer property', function(){
+    it('consumer cant change the producer property', function () {
       interconnection.bind(el1, 'singleObject', el2, 'consumer');
 
-      el2.set('consumer.x','my test');
+      el2.set('consumer.x', 'my test');
 
       assert.notEqual(el2.consumer.x, el1.singleObject.x, 'el2 property must be independient to el1 property');
-      
+
       interconnection.unbindElement(el1);
     });
   });
