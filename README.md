@@ -70,7 +70,7 @@ The documentation is available [here](https://deusconwet.github.io/interconnecti
 - [ ] Polymer 2 (not tested)
 - [ ] Polymer 3 (not tested)
 
-### Navigators
+### Browsers
 
 - [x] Chrome
 - [x] Firefox
