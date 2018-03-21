@@ -22,7 +22,7 @@
 <label for="nav-trigger" class="overlay"></label>
 
 <nav>
-    <h2><a href="index.html">Home</a></h2><h3>Classes</h3><ul><li><a href="ElementMap.html">ElementMap</a></li></ul><h3>Modules</h3><ul><li><a href="module-Interconnection.html">Interconnection</a><ul class='methods'><li data-type='method'><a href="module-Interconnection.html#._createEffect">_createEffect</a></li><li data-type='method'><a href="module-Interconnection.html#._notifyObservers">_notifyObservers</a></li><li data-type='method'><a href="module-Interconnection.html#._registerElement">_registerElement</a></li><li data-type='method'><a href="module-Interconnection.html#._unregisterElement">_unregisterElement</a></li><li data-type='method'><a href="module-Interconnection.html#.bind">bind</a></li><li data-type='method'><a href="module-Interconnection.html#.getBindingProperties">getBindingProperties</a></li><li data-type='method'><a href="module-Interconnection.html#.getCustomElements">getCustomElements</a></li><li data-type='method'><a href="module-Interconnection.html#.getElementProperties">getElementProperties</a></li><li data-type='method'><a href="module-Interconnection.html#.isBinded">isBinded</a></li><li data-type='method'><a href="module-Interconnection.html#.isConsumer">isConsumer</a></li><li data-type='method'><a href="module-Interconnection.html#.isCustomelement">isCustomelement</a></li><li data-type='method'><a href="module-Interconnection.html#.isProducer">isProducer</a></li><li data-type='method'><a href="module-Interconnection.html#.isPropertyBinded">isPropertyBinded</a></li><li data-type='method'><a href="module-Interconnection.html#.unbind">unbind</a></li><li data-type='method'><a href="module-Interconnection.html#.unbindConsumer">unbindConsumer</a></li><li data-type='method'><a href="module-Interconnection.html#.unbindElement">unbindElement</a></li><li data-type='method'><a href="module-Interconnection.html#.unbindProducer">unbindProducer</a></li></ul></li></ul>
+    <h2><a href="index.html">Home</a></h2><h3>Classes</h3><ul><li><a href="ElementMap.html">ElementMap</a></li></ul><h3>Modules</h3><ul><li><a href="module-Interconnection.html">Interconnection</a><ul class='methods'><li data-type='method'><a href="module-Interconnection.html#._createEffect">_createEffect</a></li><li data-type='method'><a href="module-Interconnection.html#._notifyAbove">_notifyAbove</a></li><li data-type='method'><a href="module-Interconnection.html#._notifyObservers">_notifyObservers</a></li><li data-type='method'><a href="module-Interconnection.html#._registerElement">_registerElement</a></li><li data-type='method'><a href="module-Interconnection.html#._unregisterElement">_unregisterElement</a></li><li data-type='method'><a href="module-Interconnection.html#.bind">bind</a></li><li data-type='method'><a href="module-Interconnection.html#.getBindingProperties">getBindingProperties</a></li><li data-type='method'><a href="module-Interconnection.html#.getCustomElements">getCustomElements</a></li><li data-type='method'><a href="module-Interconnection.html#.getElementProperties">getElementProperties</a></li><li data-type='method'><a href="module-Interconnection.html#.isBinded">isBinded</a></li><li data-type='method'><a href="module-Interconnection.html#.isConsumer">isConsumer</a></li><li data-type='method'><a href="module-Interconnection.html#.isCustomelement">isCustomelement</a></li><li data-type='method'><a href="module-Interconnection.html#.isProducer">isProducer</a></li><li data-type='method'><a href="module-Interconnection.html#.isPropertyBinded">isPropertyBinded</a></li><li data-type='method'><a href="module-Interconnection.html#.unbind">unbind</a></li><li data-type='method'><a href="module-Interconnection.html#.unbindConsumer">unbindConsumer</a></li><li data-type='method'><a href="module-Interconnection.html#.unbindElement">unbindElement</a></li><li data-type='method'><a href="module-Interconnection.html#.unbindProducer">unbindProducer</a></li></ul></li></ul>
 </nav>
 
 <div id="main">
@@ -46,12 +46,13 @@
 
 
     <section class="readme">
-        <article><p><img src="https://i.imgur.com/yx31ubv.png" alt="Interconnection"></p>
+        <article><p><img src="https://img.shields.io/badge/Code%20Coverage-99.48%25-brightgreen.svg" alt="Code Coverage-shield-badge-1"></p>
+<p><img src="https://i.imgur.com/HOFmZy3.png" alt="Interconnection"></p>
 <h1>Polymer Interconnection</h1><h2>What is Interconnection?</h2><p>Polymer Interconnection is a JavaScript library that makes it posible to bind components properties dynamically. It uses polymer in order to bind components so it's require.
 The library creates a window property <code>Interconnection</code> with high level functions to manipulate the binding between two components (consumer and producer. </p>
 <p>Interconnection is done using <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/WeakMap">WeakMap</a> and <a href="https://developer.mozilla.org/en-US/docs/Web/API/MutationObserver">MutationObserver</a>. </p>
-<p>WeakMap is used to keep track the binding information of the custom elements. Each key is a HTMLElement and their value is a Custom map of the componente <a href="https://deusconwet.github.io/interconnection/ElementMap.html">ElementsMap</a>.</p>
-<p>Suppose we have the following component</p>
+<p>WeakMap is used to keep track of the binding information of the custom elements. Each key is a HTMLElement and their value is a Custom map of the componente <a href="https://deusconwet.github.io/interconnection/ElementMap.html">ElementsMap</a>.</p>
+<p>Suppose we have the following component:</p>
 <p><strong>my-component.html</strong></p>
 <pre class="prettyprint source lang-html"><code>&lt;dom-module id=&quot;my-component&quot;>
     &lt;template>
@@ -69,15 +70,32 @@ The library creates a window property <code>Interconnection</code> with high lev
             }
         });
     &lt;/script>
-&lt;/dom-module></code></pre><p>Using the polymer syntax if we want to connect the property <code>text</code> of two <code>my-component</code> we have to using <code>{{}}</code> or <code>[[]]</code>.</p>
+&lt;/dom-module></code></pre><p>Using the polymer syntax if we want to connect the property <code>text</code> of two <code>my-component</code> we have to use <code>{{}}</code> or <code>[[]]</code>.</p>
 <pre class="prettyprint source lang-html"><code>&lt;my-component id=&quot;comp1&quot; text=&quot;{{my_text}}&quot;>&lt;/my-component>
-&lt;my-component id=&quot;comp2&quot; text=&quot;{{my_text}}&quot;>&lt;/my-component></code></pre><p>In this way, we can bind both properties but it is currently so hard to do it dynamycally using javascript. </p>
+&lt;my-component id=&quot;comp2&quot; text=&quot;{{my_text}}&quot;>&lt;/my-component></code></pre><p>In this way, we can bind both properties but it is currently so hard to do it dynamycally using javascript. This library provides a function to bind them:</p>
 <pre class="prettyprint source lang-javascript"><code>let comp1 = document.querySelector('#comp1');
 let comp2 = document.querySelector('#comp2');
 
 // Bind comp1.text to comp2.text
-Interconnection.bind(comp1, 'text',comp2,'text');</code></pre><h2>Examples</h2><h2>Documentation</h2><p>The documentation is available <a href="https://deusconwet.github.io/interconnection">here</a></p>
-<h2>Performance</h2><h2>Author</h2><p>Miguel Ortega Moreno <a href="https://github.com/mortega5">mortega5</a></p></article>
+Interconnection.bind(comp1, 'text',comp2,'text');</code></pre><h2>Documentation</h2><p>The documentation is available <a href="https://deusconwet.github.io/interconnection">here</a></p>
+<h2>Performance</h2><p><strong>Binding one producer to N consumer sending  (<a href="https://docs.google.com/spreadsheets/d/e/2PACX-1vQIeEXMiUgyG8PX870wD2yv8yeQVqdP7wXIUFLcOyPwbQEafgALYMpvLqu-uv8ikvvukg-9W-SS6zMZ/pubchart?oid=262117739&amp;format=interactive">interactive graph</a>
+)</strong></p>
+<p><img src="https://i.imgur.com/GQiu6X4.png" alt="1 to N"></p>
+<h2>Supported version</h2><h3>Polymer versions</h3><ul>
+<li>[x] Polymer 1.2</li>
+<li>[x] Polymer 1.11</li>
+<li>[ ] Polymer 2 (not tested)</li>
+<li>[ ] Polymer 3 (not tested)</li>
+</ul>
+<h3>Browsers</h3><ul>
+<li>[x] Chrome</li>
+<li>[x] Firefox</li>
+<li>[x] Opera</li>
+<li>[ ] Safari (not tested)</li>
+<li>[ ] IE (not tested)</li>
+<li>[ ] Edge (not tested)</li>
+</ul>
+<h2>Author</h2><p>Miguel Ortega Moreno <a href="https://github.com/mortega5">mortega5</a></p></article>
     </section>
 
 
@@ -90,7 +108,7 @@ Interconnection.bind(comp1, 'text',comp2,'text');</code></pre><h2>Examples</h2><
 <br class="clear">
 
 <footer>
-    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.5.5</a> on Wed Mar 14 2018 10:30:17 GMT+0100 (CET) using the <a href="https://github.com/clenemt/docdash">docdash</a> theme.
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.5.5</a> on Wed Mar 21 2018 17:14:02 GMT+0100 (CET) using the <a href="https://github.com/clenemt/docdash">docdash</a> theme.
 </footer>
 
 <script>prettyPrint();</script>
