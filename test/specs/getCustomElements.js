@@ -22,8 +22,16 @@
   var testProducer;
   var assert = chai.assert;
 
-  before(function () {
-    interconnection = window.Interconnection;
+  before(function (done) {
+    var cb = function(){
+      interconnection = window.Interconnection;
+      done();
+    };
+    if (!window.Polymer){
+      window.addEventListener('WebComponentsReady', cb);
+    } else {
+      cb();
+    }
   });
 
   describe('Check getCustomElements', function () {
@@ -55,7 +63,7 @@
     });
 
     it('Custom elements are defined', function(){
-      
+
     });
 
   });

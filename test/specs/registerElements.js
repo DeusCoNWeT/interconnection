@@ -22,10 +22,19 @@
   var testProducer;
   var assert = chai.assert;
   var body;
-  
-  before(function () {
-    interconnection = window.Interconnection;
-    body = document.querySelector('#container');
+
+  before(function (done) {
+    var cb = function () {
+      interconnection = window.Interconnection;
+      body = document.querySelector('#container');
+      done();
+    };
+
+    if (!window.Polymer) {
+      window.addEventListener('WebComponentsReady', cb);
+    } else {
+      cb();
+    }
   });
 
   describe('Add and remove custom elements dynamically', function () {
@@ -43,7 +52,7 @@
 
     });
 
-    it('Remove a element', function(done){
+    it('Remove a element', function (done) {
       var el = document.querySelector('#_mocha_test-component');
 
       var mutation = new MutationObserver(function (mutations) {
