@@ -1,4 +1,4 @@
-![Code Coverage-shield-badge-1](https://img.shields.io/badge/Code%20Coverage-99.48%25-brightgreen.svg)
+![Code Coverage-shield-badge-1](https://img.shields.io/badge/Code%20Coverage-98.43%25-brightgreen.svg)
 
 ![Interconnection](https://i.imgur.com/HOFmZy3.png)
 
@@ -85,4 +85,6 @@ The documentation is available [here](https://deusconwet.github.io/interconnecti
 ## Author
 
 Miguel Ortega Moreno [mortega5](https://github.com/mortega5)
+
+ega5)
 

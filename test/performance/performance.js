@@ -16,6 +16,8 @@
  * Contributors:
  *     Miguel Ortega Moreno
  */
+
+/* global Chart, Promise */
 (function () {
   var elements = [];
   var source;
@@ -52,7 +54,7 @@
   });
 
   var mutation_conf = { childList: true, subtree: true };
-  mutation.observe(target_container, mutation_conf)
+  mutation.observe(target_container, mutation_conf);
 
 
   // Results structure
@@ -82,9 +84,9 @@
       g_chart.update();
     } else {
       chart = document.createElement('canvas');
-      chart.height = "500";
-      chart.width = "600";
-      chart.id = "_chart";
+      chart.height = '500';
+      chart.width = '600';
+      chart.id = '_chart';
       chart_container.append(chart);
       var ctx = chart.getContext('2d');
       var config = {
@@ -93,7 +95,7 @@
           datasets: [{
             data: results.throughtput,
             backgroundColor: [
-              "#77DEC1"
+              '#77DEC1'
             ],
             label: 'msg/s'
           }],
@@ -115,10 +117,10 @@
           tooltips: {
             callbacks: {
               title: function (tooltipItem) {
-                return new Intl.NumberFormat('es-Es').format(tooltipItem[0].xLabel) + " Subscribers";
+                return new Intl.NumberFormat('es-Es').format(tooltipItem[0].xLabel) + ' Subscribers';
               },
               label: function (tooltipItem) {
-                return new Intl.NumberFormat('es-Es').format(tooltipItem.yLabel) + " msg/s";
+                return new Intl.NumberFormat('es-Es').format(tooltipItem.yLabel) + ' msg/s';
               }
             }
           }
@@ -129,7 +131,7 @@
     }
   };
 
-  // Print results 
+  // Print results
   var print_results = function (end, start, N) {
     var tr = document.createElement('tr');
     var $nsub = document.createElement('td');
@@ -151,7 +153,7 @@
     $msgs.title = Intl.NumberFormat('es-ES', { maximumSignificantDigits: 15 }).format(throughtput) + 'msg/s';
     results_container.append(tr);
 
-    results.ex_time.push(ex_time)
+    results.ex_time.push(ex_time);
     results.throughtput.push(throughtput);
     results.label.push(N);
   };
@@ -171,7 +173,7 @@
         var end_time;
         return function (e) {
           if (e.detail.value != null){ times++;}
-          
+
           var change = true;
           // all elementes changed
           if (times == n) {
@@ -209,8 +211,5 @@
       source.set(source_prop, new_value);
     });
   };
-
-
-
 
 })();

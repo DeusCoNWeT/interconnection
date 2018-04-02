@@ -16,6 +16,7 @@
  * Contributors:
  *     Miguel Ortega Moreno
  */
+/* global assert */
 (function () {
   describe('Stress test', function () {
     var elements = [];
@@ -58,7 +59,7 @@
               elements[i].removeEventListener('text-changed', callbacks(N));
             }
             for (var i = 1; i < n_elements; i++) {
-              assert.equal(elements[0][source_prop], elements[i][target_prop], 'Element ' + i +' should be equals to element 0')
+              assert.equal(elements[0][source_prop], elements[i][target_prop], 'Element ' + i +' should be equals to element 0');
             }
             done();
           }
@@ -76,6 +77,5 @@
       var start_time = new Date();
       source.set(source_prop, 'prueba' + N);
     });
-
-  })
+  });
 })();

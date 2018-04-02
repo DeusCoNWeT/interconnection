@@ -133,7 +133,8 @@
       assert.deepEqual(el1.doubleKey, el2.consumer, 'el1 and el2 are not equals after binding');
 
       el1.set('doubleKey.doubleKey.x', 4);
-      assert.deepEqual(el2.consumer, el1.doubleKey, 'El2 has not the same properties that el1. doubleKey.doubleKey.x changed but not in el2');
+      assert.deepEqual(el2.consumer, el1.doubleKey,
+        'El2 has not the same properties that el1. doubleKey.doubleKey.x changed but not in el2');
 
       interconnection.unbindElement(el1);
     });
