@@ -80,11 +80,7 @@ The documentation is available [here](https://deusconwet.github.io/interconnecti
 - [ ] Edge (not tested)
 
 
-
-
 ## Author
 
 Miguel Ortega Moreno [mortega5](https://github.com/mortega5)
-
-ega5)
 
