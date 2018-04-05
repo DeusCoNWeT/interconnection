@@ -24,6 +24,7 @@
     var source_prop = 'text';
     var target_prop = 'text';
     var n_elements = 1e4;
+    this.settimeout(10000);
     before(function (done) {
 
       var cb = function () {
