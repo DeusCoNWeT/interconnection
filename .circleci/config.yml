@@ -1,0 +1,23 @@
+version: 2
+jobs:
+  build:
+    docker:
+      - image: mortega5/karma
+    steps:
+      - checkout
+      - run:
+          name: enable display
+          command: Xvfb :1 -screen 0 1024x768x24
+          background: true
+      - run:
+          name: set display
+          command: export DISPLAY=:1
+      - run:
+          name: install dependencies
+          command: npm i && bower install --allow-root
+      - run:
+          name: gulp test
+          command:  gulp test
+          environment:
+             DISPLAY: :1
+
