@@ -13,6 +13,7 @@
     "gulp-gh-pages": "^0.5.4",
     "gulp-header-license": "^1.0.9",
     "gulp-jsdoc3": "^1.0.1",
+    "gulp-minify": "^2.1.0",
     "istanbul-reporter-shield-badge": "^1.1.3",
     "karma": "^2.0.0",
     "karma-chai": "^0.1.0",
