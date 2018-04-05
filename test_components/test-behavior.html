@@ -1,0 +1,25 @@
+<script>
+    TestBehavior = {
+      properties: {
+        bool: {
+          type: Boolean,
+          value: false,
+          notify: true,
+          observer: '_boolChanged'
+        }
+      },
+
+      listeners: {
+        click: '_togglebool'
+      },
+
+      _togglebool: function() {
+        this.set('bool', !this.bool);
+      },
+
+      _boolChanged: function(value) {
+        this.toggleClass('bool', value);
+      }
+
+    };
+</script>

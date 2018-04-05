@@ -1,0 +1,49 @@
+<link rel="import" href="../bower_components/polymer/polymer.html">
+<link rel="import" href="test-behavior.html">
+
+<dom-module id="test-array">
+  <template>
+    <style>
+      :host {
+        display: inline-block;
+      }
+
+      p {
+        margin: 3px 0;
+      }
+    </style>
+    <p>Lista de test: {{simpleArray.length}}</p>
+    <template is="dom-repeat" items="{{simpleArray}}">
+      <p>{{item}}, </p>
+    </template>
+    <p>Lista de prueba: {{consumer.length}}</p>
+    <template is="dom-repeat" items="{{consumer}}">
+      <p>{{item}}, </p>
+    </template>
+  </template>
+  <script>
+    Polymer({
+      is: 'test-array',
+      properties: {
+        simpleArray: {
+          type: Array,
+          value: function () {
+            return ['a', 'b', 'c', 'd'];
+          }
+        },
+        consumer: {
+          type: Array,
+          value: function () {
+            return [];
+          }
+        },
+        arrayObject: {
+          type: Array,
+          value: function () {
+            return [{ a: 'a' }, { a: 'b' }, { a: 'c' }, { a: 'd' }];
+          }
+        },
+      }
+    });
+  </script>
+</dom-module>

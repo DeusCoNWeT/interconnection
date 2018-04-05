@@ -1,5 +1,9 @@
 node_modules
+.vscode
 dist
 bower_components
 .tmp
 .publish/
+coverage
+local
+docs

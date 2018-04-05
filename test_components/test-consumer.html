@@ -1,0 +1,30 @@
+<link rel="import" href="../bower_components/polymer/polymer.html">
+<link rel="import" href="test-behavior.html">
+<dom-module id="test-consumer">
+    <template>
+        <style>
+            :host {
+                display: block;
+            }
+        </style>
+         <p>I show what i am consuming {{text}}</p>
+         <textarea id="textarea" value="{{text}}"></textarea>
+         <button id="but_1" on-click="_publish">Publicar</button>
+    </template>
+    <script>
+        Polymer({
+            is: 'test-consumer',
+            behaviors: [TestBehavior],
+            properties: {
+                text: {
+                    type: String,
+                    value: "",
+                    readOnly: false
+                }
+            },
+            _publish: function(){
+                this.$.but_1.value = "Publicado";
+            }
+        });
+    </script>
+</dom-module>

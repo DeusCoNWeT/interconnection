@@ -1,0 +1,53 @@
+<link rel="import" href="../bower_components/polymer/polymer.html">
+<link rel="import" href="test-behavior.html">
+
+<dom-module id="test-object">
+  <template>
+    <style>
+      :host {
+        display: block;
+      }
+    </style>
+    <input value={{deep.testx.x::input}}>
+    <input value={{deep.testy.y::input}}>
+    <p>testy.y: {{consumer.testy.y}} testx.x: {{consumer.testx.x}}</p>
+  </template>
+  <script>
+    Polymer({
+      is: 'test-object',
+      properties: {
+        deep: {
+          type: Object,
+          value: function () {
+            return {
+              testx: { x: 100 },
+              testy: { y: 100 }
+            }
+          },
+        },
+        consumer: {
+          type: Object,
+          value: function () {
+            return {};
+          }
+        },
+        singleObject: {
+          type: Object,
+          value: function () {
+            return { x: 100, y: 100 }
+          }
+        },
+        doubleKey: {
+          type: Object,
+          value: function () {
+            return {
+              doubleKey: {
+                x: 100
+              }
+            }
+          }
+        }
+      }
+    });
+  </script>
+</dom-module>
