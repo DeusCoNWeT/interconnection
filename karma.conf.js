@@ -92,8 +92,32 @@ module.exports = function (config) {
     logLevel: config.LOG_INFO,
 
     autoWatch: false,
-
-    browsers: ['Firefox','Opera', 'Chrome'],
+    customLaunchers: {
+      'ChromeHeadless': {
+        base: 'Chrome',
+        flags: [
+          '--headless',
+          '--disable-gpu',
+          '--remote-debugging-port=9222',
+          '--no-sandbox'
+        ],
+        // debug: true
+      },
+      'FirefoxHeadless': {
+        base: 'Firefox',
+        flags: [
+          '-headless'
+        ]
+      },
+      'OperaSandbox':{
+        base: 'Opera',
+        flags: [
+          '--no-sandbox'
+        ]
+      }
+    },
+    //browsers: ['ChromeHeadless','FirefoxHeadless'],
+    browsers: ['FirefoxHeadless','OperaSandbox', 'ChromeHeadless'],
 
     singleRun: true,
     proxies: {
