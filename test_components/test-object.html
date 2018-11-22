@@ -13,41 +13,44 @@
     <p>testy.y: {{consumer.testy.y}} testx.x: {{consumer.testx.x}}</p>
   </template>
   <script>
-    Polymer({
-      is: 'test-object',
-      properties: {
-        deep: {
-          type: Object,
-          value: function () {
-            return {
-              testx: { x: 100 },
-              testy: { y: 100 }
+    class TestObject extends Polymer.Element {
+      static get is() { return 'test-object' }
+      static get properties() {
+        return {
+          deep: {
+            type: Object,
+            value: function () {
+              return {
+                testx: { x: 100 },
+                testy: { y: 100 }
+              }
+            },
+          },
+          consumer: {
+            type: Object,
+            value: function () {
+              return {};
             }
           },
-        },
-        consumer: {
-          type: Object,
-          value: function () {
-            return {};
-          }
-        },
-        singleObject: {
-          type: Object,
-          value: function () {
-            return { x: 100, y: 100 }
-          }
-        },
-        doubleKey: {
-          type: Object,
-          value: function () {
-            return {
-              doubleKey: {
-                x: 100
+          singleObject: {
+            type: Object,
+            value: function () {
+              return { x: 100, y: 100 }
+            }
+          },
+          doubleKey: {
+            type: Object,
+            value: function () {
+              return {
+                doubleKey: {
+                  x: 100
+                }
               }
             }
           }
         }
       }
-    });
+    }
+    customElements.define(TestObject.is,TestObject);
   </script>
 </dom-module>
