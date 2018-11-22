@@ -1,45 +1,31 @@
-<link rel="import" href="../bower_components/polymer/polymer.html">
-<link rel="import" href="test-behavior.html">
+<link rel="import" href="../bower_components/polymer/polymer-element.html">
 
-<dom-module id="test-producer">
+
+<dom-module id="name-tag">
   <template>
-      <style>
-          :host {
-              display: block;
-          }
-      </style>
-      <span>Please enter text.</span>
-      <input id="input" class="paper-font-body2" value="{{text::input}}">
-      <input id="input2" class="paper-font-body2" value="{{testing::input}}">
-      <input id="checkbox" type="checkbox" checked$="{{inheritedProperty}}">
+    <!-- bind to the "owner" property -->
+    This is <b>{{test}}</b>'s name-tag element.
   </template>
+  
   <script>
-    class TestProducer extends Polymer.Element {
-      static get is() { return 'hello-world' }
-      static get behaviors() { return [TestBehavior] }
+    class NameTag extends Polymer.Element {
+      static get is() { return "name-tag"; }
       static get properties() {
         return {
-          text: {
+          test: {
             type: String,
-            input: true,
-            output: true,
-            description: "",
-            notify: true,
-            reflectToAttribute: true
-          },
-          testing: {
-            type: String,
-            input: true,
-            output: true,
-            description: ""
-          },
-          onlyProducer: {
-            type: String,
-            readOnly: true
+            value: 'holaaa',
+            input: 'true'
           }
         }
       }
+      // set this element's owner property
+      constructor() {
+        super();
+        this.owner = "Daniel";
+      }
     }
-    customElements.define(TestProducer.is,TestProducer);    
+    
+    customElements.define(NameTag.is, NameTag);
   </script>
 </dom-module>
