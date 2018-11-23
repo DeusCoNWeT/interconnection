@@ -18,7 +18,7 @@
  */
 /* global assert */
 (function () {
-  describe('Stress test', function () {
+  describe.skip('Stress test', function () {
     var elements = [];
     var source;
     var source_prop = 'text';

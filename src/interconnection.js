@@ -45,7 +45,7 @@
 
     this.producers_prop = this.properties.__producers;
 
-    this.model = Polymer.telemetry.registrations.find(function (el) { return el.is == element.tagName.toLowerCase(); });
+    this.model = Polymer.telemetry.registrations.find(function (el) { return el.constructor.is == element.tagName.toLowerCase(); });
 
     this.observers = {};
     this.listeners = {};
@@ -101,8 +101,6 @@
     this.listeners[target_prop] = listener;
   };
 
-
-
   /**
    * Interconnection module
    * @exports Interconnection
@@ -149,36 +147,30 @@
       } else {
         if (window.Polymer.telemetry) {
           var ce_registered = window.Polymer.telemetry.registrations.map(function (el) {
-            return el.is;
+            return el.constructor.is;
           }) || [];
 
           return document.querySelectorAll(ce_registered.join(','));
         }
       }
     },
-
     /**
      * Register an model property of a custom element in order to notify each time it changes
      * @param {HTMLElement} model Custom element model provided by polymer
      * @param {String} path Model path property that is listened to each time it changes
      */
     _createEffect: function (model, path) {
-      var name = model.is;
+      var name = model.constructor.is;
       this.__customEffects[name] = this.__customEffects[name] || {};
 
-      var props = model._getPathParts(path);
+      var props = path.split('.');
       var base_prop = props[0];
 
       if (this.__customEffects[name][base_prop] == undefined) {
-        var fx = Polymer.Bind.ensurePropertyEffects(model, base_prop);
-
         var propEffect = {
-          kind: 'binding',
           fn: Interconnection._notifyObservers,
-          pathFn: Interconnection._notifyObservers
         };
-
-        fx.push(propEffect);
+        var fx = model._addPropertyEffect(path, model.PROPERTY_EFFECT_TYPES.PROPAGATE, propEffect);
         this.__customEffects[name][path] = propEffect;
       }
     },
@@ -207,7 +199,7 @@
       }
 
       // own properties
-      Object.assign(properties, element.properties);
+      Object.assign(properties, element.constructor.properties);
       return properties;
     },
 
@@ -217,7 +209,7 @@
      * @return {Boolean} If it is a custom element or
      */
     isCustomelement: function (element) {
-      return element instanceof HTMLElement && element.is !== undefined;
+      return element instanceof HTMLElement && element.constructor.is !== undefined;
     },
     /**
      * Take all the properties of an element differentiating between consuming and producing properties.
@@ -313,11 +305,11 @@
       if (!target_map.consumers_prop[target_prop_base]) {
         throw Error('Property "' + target_prop_base + '" is not a consumer property');
       }
-
+      // Args should match with _notifyObserver and _notifyAbove
       var fn = function (source, value, effect, old, fromAbove, dirtyCheck) {
         // translate the path notification to new path
         var notify_path = Polymer.Path.translate(source_prop, target_prop, source);
-        var is_array = value && value.keySplices !== undefined;
+        var is_array = value && value.indexSplices !== undefined;
         // If dirty check is true, do it https://www.polymer-project.org/1.0/docs/devguide/model-data#override-dirty-check
 
         if (dirtyCheck) {
@@ -339,54 +331,61 @@
 
     /**
      * Function to notify to all observer that a property of an element has changed
-     * @param {String} source Property that produce the change
-     * @param {Any} value New value of the property
-     * @param {Any} effect Effect defined for this type of notification (currently unused)
-     * @param {Any} old Last value of the property
-     * @param {Any} fromAbove Provided by Polymer (currently unused)
+     * @param {!PropertyEffectsType} inst The instance with effects to run (custom element reference)
+     * @param {string} source Name of changed property
+     * @param {Object} props Changed properties
+     * @param {Object} oldProps Old properties
+     * @param {*} info Extra information provided by effect handler
+     * @param {boolean=} hasPaths True with `props` contains one or more paths
+     * @param {*=} extraArgs Additional metadata to pass to effect function
      */
-    _notifyObservers: function (source, value, effect, old, fromAbove) {
-      var is_array = value && value.keySplices !== undefined && value.indexSplices !== undefined;
+    _notifyObservers: function (inst, source, props, oldProps, info, hasPaths, extraArgs) {
+      var value = props[source];
+      var is_array = value && value.indexSplices !== undefined;
 
-      var el_map = Interconnection.elementsMap.get(this);
-      var parts = this._getPathParts(source);
+      var el_map = Interconnection.elementsMap.get(inst);
+      var parts = source.split('.');
 
 
       var observers = el_map.observers[source];
 
       if (observers) {
-        observers.forEach(function (observer) { observer.fn(source, value, effect, old, fromAbove); });
+        observers.forEach(function (observer) { observer.fn(source, value, info, oldProps[source], hasPaths); });
       }
 
       // Notify above
       if (parts.length > 1 && !is_array) {
-        Interconnection._notifyAbove.call(this, source, value, effect, old, fromAbove);
+        Interconnection._notifyAbove.call(this, inst, source, props, oldProps, info, hasPaths, extraArgs);
       }
     },
     /**
      * Notify parents of changes in an object. Changes in `test.mytest` will be notified to `test`.
      * In the same way, changes in `test.mytest.myvar` will be notified to `test` and `test.mytest`
-     * @param {String} source Path of the change source
-     * @param {Any} value Value of the change
-     * @param {Any} effect Effect defined for this type of notification (currently unused)
-     * @param {Any} old Last value of the property
-     * @param {Any} fromAbove Provided by Polymer (currently unused)
+     * @param {!PropertyEffectsType} inst The instance with effects to run (custom element reference)
+     * @param {string} source Name of changed property
+     * @param {Object} props Changed properties
+     * @param {Object} oldProps Old properties
+     * @param {*} info Extra information provided by effect handler
+     * @param {boolean=} hasPaths True with `props` contains one or more paths
+     * @param {*=} extraArgs Additional metadata to pass to effect function
+    
      */
-    _notifyAbove: function (source, value, effect, old, fromAbove) {
+    _notifyAbove: function (inst, source, props, oldProps, info, hasPaths, extraArg) {
+      var value = props[source];
       var observers, new_val, path;
-      var parts = this._getPathParts(source);
+      var parts = source.split('.');
       parts.pop();
 
-      var el_map = Interconnection.elementsMap.get(this);
+      var el_map = Interconnection.elementsMap.get(inst);
 
       // Notify all parents
       while (parts.length > 0) {
         path = parts.join('.');
         observers = el_map.observers[path];
-        new_val = this.get(path);
+        new_val = inst.get(path);
 
         if (observers) {
-          observers.forEach(function (observer) { observer.fn(source, new_val, effect, old, fromAbove); });
+          observers.forEach(function (observer) { observer.fn(path, new_val, info, oldProps[source], hasPaths); });
         }
         parts.pop();
       }

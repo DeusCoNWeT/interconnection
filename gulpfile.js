@@ -20,7 +20,7 @@ var files = {
 
 gulp.task('lint', function () {
   return gulp.src(files.lint_files)
-    .pipe(eslint())
+    .pipe(eslint({fix: true}))
     .pipe(eslint.format())
     .pipe(eslint.failAfterError());
 });

@@ -1,42 +1,45 @@
-<link rel="import" href="../bower_components/polymer/polymer.html">
+<link rel="import" href="../bower_components/polymer/polymer-element.html">
 <link rel="import" href="test-behavior.html">
 
 <dom-module id="test-producer">
-    <template>
-        <style>
-            :host {
-                display: block;
-            }
-        </style>
-        <span>Please enter text.</span>
-        <input id="input" class="paper-font-body2" value="{{text::input}}">
-        <input id="input2" class="paper-font-body2" value="{{testing::input}}">
-        <input id="checkbox" type="checkbox" checked$="{{inheritedProperty}}">
-    </template>
-    <script>
-        Polymer({
-            is: 'test-producer',
-            behaviors: [TestBehavior],
-            properties: {
-                text: {
-                    type: String,
-                    input: true,
-                    output: true,
-                    description: "",
-                    notify: true,
-                    reflectToAttribute: true
-                },
-                testing: {
-                    type: String,
-                    input: true,
-                    output: true,
-                    description: ""
-                },
-                onlyProducer: {
-                  type: String,
-                  readOnly: true
-                }
-            }
-        });
-    </script>
+  <template>
+      <style>
+          :host {
+              display: block;
+          }
+      </style>
+      <span>Please enter text.</span>
+      <input id="input" class="paper-font-body2" value="{{text::input}}">
+      <input id="input2" class="paper-font-body2" value="{{testing::input}}">
+      <input id="checkbox" type="checkbox" checked$="{{inheritedProperty}}">
+  </template>
+  <script>
+    class TestProducer extends Polymer.Element {
+      static get is() { return 'test-producer' }
+      static get behaviors() { return [TestBehavior] }
+      static get properties() {
+        return {
+          text: {
+            type: String,
+            input: true,
+            output: true,
+            description: "",
+            notify: true,
+            reflectToAttribute: true
+          },
+          testing: {
+            type: String,
+            input: true,
+            output: true,
+            description: ""
+          },
+          onlyProducer: {
+            type: String,
+            readOnly: true
+          }
+        }
+      }
+    }
+    customElements.define(TestProducer.is,TestProducer);    
+  </script>
 </dom-module>
