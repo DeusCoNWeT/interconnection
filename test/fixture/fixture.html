@@ -1,5 +1,6 @@
 <!doctype html>
 <html>
+
 <head>
   <meta charset="utf-8">
   <script src="../../bower_components/webcomponentsjs/webcomponents-lite.js"></script>
@@ -7,24 +8,44 @@
   <link rel="import" href="../../bower_components/polymer/lib/elements/dom-bind.html">
   <link rel="import" href="../../bower_components/polymer/lib/elements/dom-repeat.html">
   <link rel="import" href="../../test_components/test-producer.html">
+  <link rel="import" href="../../test_components/test-array.html">
+  <link rel="import" href="../../test_components/test-object.html">
+  <link rel="import" href="../../test_components/test-consumer.html">
 
 </head>
+
 <body>
+  <style>
+    #container {
+      display: none;
+    }
+  </style>
   <!-- Wrap elements with auto-binding template to -->
   <!-- allow use of Polymer bindings in main document -->
-  <dom-bind>
-    <template>
-      <name-tag id="test"></name-tag>
-      <name-tag id="test2"></name-tag>
-    </template>
-  </dom-bind>
-  <script src="../../src/interconnection.js"></script>
-  <script>
-    var el1 = document.querySelector('#test');
-    var el2 = document.querySelector('#test2');
+  <div id="container">
+    <dom-bind>
+      <template>
+        <test-producer id="test-producer"></test-producer>
+        <test-producer></test-producer>
+        <test-producer></test-producer>
+        <test-producer></test-producer>
 
-    var prop ="test";
-    Interconnection.bind(el1,prop,el2,prop);
-  </script>
+        <test-object id="test-object"></test-object>
+        <test-object id="test-object2"></test-object>
+        <test-object id="test-object3"></test-object>
+
+        <test-array id="test-array"></test-array>
+        <test-array id="test-array2"></test-array>
+        <test-array id="test-array3"></test-array>
+
+        <p id="noCustomElement" text="hola"></p>
+        <p id="noCustomElement2" text="hola"></p>
+      </template>
+    </dom-bind>
+  </div>
+  <div id="mocha"></div>
+  <div id="test" style="position: fixed; top: 0; left: -99999px;"></div>
+  <script src="../../src/interconnection.js"></script>
 </body>
+
 </html>

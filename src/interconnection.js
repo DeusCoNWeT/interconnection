@@ -147,7 +147,7 @@
       } else {
         if (window.Polymer.telemetry) {
           var ce_registered = window.Polymer.telemetry.registrations.map(function (el) {
-            return el.is;
+            return el.constructor.is;
           }) || [];
 
           return document.querySelectorAll(ce_registered.join(','));
@@ -305,11 +305,11 @@
       if (!target_map.consumers_prop[target_prop_base]) {
         throw Error('Property "' + target_prop_base + '" is not a consumer property');
       }
-
+      // Args should match with _notifyObserver and _notifyAbove
       var fn = function (source, value, effect, old, fromAbove, dirtyCheck) {
         // translate the path notification to new path
         var notify_path = Polymer.Path.translate(source_prop, target_prop, source);
-        var is_array = value && value.keySplices !== undefined;
+        var is_array = value && value.indexSplices !== undefined;
         // If dirty check is true, do it https://www.polymer-project.org/1.0/docs/devguide/model-data#override-dirty-check
 
         if (dirtyCheck) {
@@ -331,18 +331,17 @@
 
     /**
      * Function to notify to all observer that a property of an element has changed
-     * @param {!PropertyEffectsType} inst The instance with effects to run
+     * @param {!PropertyEffectsType} inst The instance with effects to run (custom element reference)
      * @param {string} source Name of changed property
-     * @param {Object} effect Object map of property-to-Array
-     * @param {*} props Changed properties
-     * @param {*} oldProps Old properties
+     * @param {Object} props Changed properties
+     * @param {Object} oldProps Old properties
      * @param {*} info Extra information provided by effect handler
      * @param {boolean=} hasPaths True with `props` contains one or more paths
      * @param {*=} extraArgs Additional metadata to pass to effect function
      */
     _notifyObservers: function (inst, source, props, oldProps, info, hasPaths, extraArgs) {
       var value = props[source];
-      var is_array = value && value.keySplices !== undefined && value.indexSplices !== undefined;
+      var is_array = value && value.indexSplices !== undefined;
 
       var el_map = Interconnection.elementsMap.get(inst);
       var parts = source.split('.');
@@ -356,26 +355,25 @@
 
       // Notify above
       if (parts.length > 1 && !is_array) {
-        Interconnection._notifyAbove.call(this, source, value, info, old, hasPaths);
+        Interconnection._notifyAbove.call(this, inst, source, props, oldProps, info, hasPaths, extraArgs);
       }
     },
     /**
      * Notify parents of changes in an object. Changes in `test.mytest` will be notified to `test`.
      * In the same way, changes in `test.mytest.myvar` will be notified to `test` and `test.mytest`
-     * @param {!PropertyEffectsType} inst The instance with effects to run
-     * @param {string} prop Name of changed property
-     * @param {Object} effect Object map of property-to-Array
-     * @param {*} props Changed properties
-     * @param {*} oldProps Old properties
+     * @param {!PropertyEffectsType} inst The instance with effects to run (custom element reference)
+     * @param {string} source Name of changed property
+     * @param {Object} props Changed properties
+     * @param {Object} oldProps Old properties
      * @param {*} info Extra information provided by effect handler
      * @param {boolean=} hasPaths True with `props` contains one or more paths
      * @param {*=} extraArgs Additional metadata to pass to effect function
     
      */
-    _notifyAbove: function (inst, prop, props, oldProps, info, hasPaths, extraArgs) {
-      var value = props[prop];
+    _notifyAbove: function (inst, source, props, oldProps, info, hasPaths, extraArg) {
+      var value = props[source];
       var observers, new_val, path;
-      var parts = prop.split('.');
+      var parts = source.split('.');
       parts.pop();
 
       var el_map = Interconnection.elementsMap.get(inst);
@@ -384,10 +382,10 @@
       while (parts.length > 0) {
         path = parts.join('.');
         observers = el_map.observers[path];
-        new_val = value;
+        new_val = inst.get(path);
 
         if (observers) {
-          observers.forEach(function (observer) { observer.fn(source, value, info, oldProps[source], hasPaths); });
+          observers.forEach(function (observer) { observer.fn(path, new_val, info, oldProps[source], hasPaths); });
         }
         parts.pop();
       }

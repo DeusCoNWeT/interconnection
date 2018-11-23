@@ -116,7 +116,8 @@ module.exports = function (config) {
         ]
       }
     },
-    //browsers: ['ChromeHeadless','FirefoxHeadless'],
+    // browsers: ['ChromeHeadless','FirefoxHeadless'],
+    // browsers: ['Chrome'],
     browsers: ['FirefoxHeadless','OperaSandbox', 'ChromeHeadless'],
 
     singleRun: true,
