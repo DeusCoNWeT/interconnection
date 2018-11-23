@@ -27,7 +27,7 @@
     before(function (done) {
       var cb = function () {
         interconnection = window.Interconnection;
-        el1 = document.querySelector('#test-array');
+        el1 = document.querySelector('#test-array1');
         el2 = document.querySelector('#test-array2');
         el3 = document.querySelector('#test-array3');
         done();

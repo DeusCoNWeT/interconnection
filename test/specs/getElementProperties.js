@@ -39,7 +39,7 @@
 
   describe('Check getElementProperties', function () {
     it('Check get element properties return an object', function () {
-      var properties_element = interconnection.getElementProperties('#test-producer');
+      var properties_element = interconnection.getElementProperties('#test-producer1');
       assert.isObject(properties_element, 'Properties is not an object');
     });
     it('Pass invalid element', function () {
