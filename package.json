@@ -1,5 +1,6 @@
 {
   "private": true,
+  "version": "1.0.1",
   "devDependencies": {
     "@types/body-parser": "^1.16.8",
     "babel-core": "^6.26.0",
