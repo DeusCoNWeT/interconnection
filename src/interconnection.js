@@ -474,7 +474,7 @@
         delete el_map.listeners[target_prop];
 
         var source_map = this.elementsMap.get(listener.source_el);
-        var idx = source_map.observers[listener.source_prop].indexOf(listener.fn);
+        var idx = source_map.observers[listener.source_prop].findIndex( el => el.fn === listener.fn);
 
         source_map.observers[listener.source_prop].splice(idx, 1);
 

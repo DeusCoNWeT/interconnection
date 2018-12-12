@@ -1,4 +1,4 @@
-![Code Coverage-shield-badge-1](https://img.shields.io/badge/Code%20Coverage-97.92%25-brightgreen.svg)
+![Code Coverage-shield-badge-1](https://img.shields.io/badge/Code%20Coverage-97.93%25-brightgreen.svg)
 [![CircleCI](https://circleci.com/gh/DeusCoNWeT/interconnection/tree/master.svg?style=svg)](https://circleci.com/gh/DeusCoNWeT/interconnection/tree/master)
 ![Interconnection](https://i.imgur.com/HOFmZy3.png)
 
