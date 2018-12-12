@@ -61,7 +61,8 @@ gulp.task('compress', function () {
 });
 
 
-gulp.task('ghPages',['doc'], function(){
+gulp.task('ghPages', gulp.series('doc', function(){
   return gulp.src('./docs/**/*')
     .pipe(ghPages());
-});
+}));
+
