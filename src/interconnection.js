@@ -22,7 +22,7 @@
 
   // Init
   var body = document.querySelector('html');
-  var Polymer = window.Polymer;
+  var Polymer = window['Polymer'];
   var mutation_conf = { childList: true, subtree: true };
 
   /**
@@ -142,11 +142,11 @@
      * @return {Array} Node list of custom elements in the dom
      */
     getCustomElements: function () {
-      if (window.Polymer === undefined) {
+      if (window['Polymer'] === undefined) {
         throw new Error('Polymer is not defined');
       } else {
-        if (window.Polymer.telemetry) {
-          var ce_registered = window.Polymer.telemetry.registrations.map(function (el) {
+        if (window['Polymer'].telemetry) {
+          var ce_registered = window['Polymer'].telemetry.registrations.map(function (el) {
             return el.constructor.is;
           }) || [];
 
@@ -285,6 +285,9 @@
 
       //REVIEW: Should be a map created if it doesnt exist?
       if (!source_map) {
+        if (!Polymer) {
+          load_dom();
+        }
         this._registerElement(source_el);
         source_map = Interconnection.elementsMap.get(source_el);
       }
@@ -537,7 +540,7 @@
   window.Interconnection = Interconnection;
 
   var load_dom = function () {
-    Polymer = window.Polymer;
+    Polymer = window['Polymer'];
     Interconnection.__domObserver = new MutationObserver(function (mutations) {
       mutations.forEach(function (mutation) {
         // NodeList.forEach issues
