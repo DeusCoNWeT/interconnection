@@ -50,7 +50,7 @@ module.exports = function (config) {
       }
     },
 
-    reporters: ['summary', 'coverage'],
+    reporters: ['mocha', 'summary', 'coverage'],
     summaryReporter: {
       // 'failed', 'skipped' or 'all'
       show: 'all',

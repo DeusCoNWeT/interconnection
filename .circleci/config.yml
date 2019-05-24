@@ -16,8 +16,8 @@ jobs:
           name: install dependencies
           command: npm i && bower install --allow-root
       - run:
-          name: gulp test
-          command:  gulp test
+          name: npm test
+          command:  npm test
           environment:
              DISPLAY: :1
 

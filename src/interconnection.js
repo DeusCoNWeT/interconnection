@@ -278,7 +278,7 @@
         throw new Error('Source and target element must be a HTMLElement');
       }
 
-      if (!source_prop || !target_prop){
+      if (!source_prop || !target_prop) {
         throw new Error('Source or target property are empty');
       }
       if (source_el == target_el) {
@@ -483,7 +483,7 @@
         delete el_map.listeners[target_prop];
 
         var source_map = this.elementsMap.get(listener.source_el);
-        var idx = source_map.observers[listener.source_prop].findIndex( el => el.fn === listener.fn);
+        var idx = source_map.observers[listener.source_prop].findIndex(function (el) { return el.fn === listener.fn });
 
         source_map.observers[listener.source_prop].splice(idx, 1);
 
