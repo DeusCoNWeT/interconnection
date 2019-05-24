@@ -78,5 +78,9 @@
       }
     });
 
+    it('Should remove private properties', function () {
+      var properties = interconnection.getElementProperties(targetElement, true);
+      assert.isFalse(Object.keys(properties).some(prop => prop.charAt(0) === '_'))
+    })
   });
 })();
