@@ -177,9 +177,10 @@
     /**
      * Get all properties of a custom element including inherited properties
      * @param {HTMLElement} element Custom element from which the properties are to be obtained
+     * @param {Boolean} excludePrivate Private properties (begin with `_`) won't be included
      * @return {Object} All element properties
      */
-    getElementProperties: function (element) {
+    getElementProperties: function (element, excludePrivate) {
       if (typeof element === 'string') {
         try {
           element = document.querySelector(element);
@@ -200,6 +201,13 @@
 
       // own properties
       Object.assign(properties, element.constructor.properties);
+      if (excludePrivate) {
+        Object.keys(properties).forEach(prop => {
+          if (prop.charAt(0) === '_') {
+            delete properties[prop]
+          }
+        })
+      }
       return properties;
     },
 
@@ -215,12 +223,13 @@
      * Take all the properties of an element differentiating between consuming and producing properties.
      * A property is consumer and producer unless readOnly is set to true
      * @param {HTMLElement} element Custom element from which the properties are to be obtained
+     * @param {Boolean} excludePrivate Private properties (begin with `_`) won't be included
      * @return {Object} Object with all the properties of the element and the __cosumers
      * and __producers variables that include each of the properties that consume and produce
      * data respectively.
      */
-    getBindingProperties: function (el) {
-      var properties = Interconnection.getElementProperties(el);
+    getBindingProperties: function (el, excludePrivate) {
+      var properties = Interconnection.getElementProperties(el, excludePrivate);
       var bindingProperties = {
         __consumers: {},
         __producers: {}
