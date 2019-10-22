@@ -356,7 +356,7 @@
       var parts = source.split('.');
 
 
-      var observers = el_map.observers[source];
+      var observers = el_map ? el_map.observers[source]: undefined;
 
       if (observers) {
         observers.forEach(function (observer) { observer.fn(source, value, info, oldProps[source], hasPaths); });
@@ -377,7 +377,7 @@
      * @param {*} info Extra information provided by effect handler
      * @param {boolean=} hasPaths True with `props` contains one or more paths
      * @param {*=} extraArgs Additional metadata to pass to effect function
-    
+
      */
     _notifyAbove: function (inst, source, props, oldProps, info, hasPaths, extraArg) {
       var value = props[source];
