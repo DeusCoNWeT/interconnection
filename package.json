@@ -15,8 +15,9 @@
     "gulp-header-license": "^1.0.9",
     "gulp-jsdoc3": "^2.0.0",
     "gulp-minify": "^3.1.0",
+    "handlebars": "^4.4.5",
     "istanbul-reporter-shield-badge": "^1.1.3",
-    "karma": "^3.1.3",
+    "karma": "^4.4.1",
     "karma-chai": "^0.1.0",
     "karma-chrome-launcher": "^2.2.0",
     "karma-coverage": "^1.1.1",
@@ -35,5 +36,6 @@
   },
   "engines": {
     "node": ">=0.10.0"
-  }
+  },
+  "dependencies": {}
 }
